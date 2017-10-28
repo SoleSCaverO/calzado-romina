@@ -1,0 +1,21 @@
+.nav-tabs{
+    background-color: #31ade5;
+}
+.tab-content{
+    padding:5px;
+    background-color: white;
+    border-left: 1px solid #35baf6;
+    border-right: 1px solid #35baf6;
+    border-bottom: 1px solid #35baf6;
+}
+.nav-tabs > li > a{
+    color: white;
+    border: medium none;
+}
+.naver>li>a:hover, .naver>li>a:focus {
+    background-color: #35baf6;
+}
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:focus, .nav-tabs>li.active>a:hover{
+    border-color: #31ade5 !important;
+    color: #31ade5;
+}
