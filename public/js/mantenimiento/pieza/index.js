@@ -1,12 +1,31 @@
 $(document).on('ready',main);
 
+var $modal_description_create;
+var $modal_description_edit;
+var $modal_description_delete;
+
 var $modal_pieza;
 var $modal_number;
 var $requested = 0;
+var $description_id = 0;
 
 function main() {
-    $modal_pieza = $('#modal_pieza');
     $body = $('body');
+    $modal_description_create = $('#modal_description_create');
+    $modal_description_edit   = $('#modal_description_edit');
+    $modal_description_delete = $('#modal_description_delete');
+    $modal_pieza = $('#modal_pieza');
+
+    $body.on('click','[data-description_create]',modal_description_create);
+    $body.on('click','[data-description_edit]',modal_description_edit);
+    $body.on('click','[data-description_delete]',modal_description_delete);
+
+    $('#form_description_create').on('submit',form_description_create);
+    $('#form_description_edit').on('submit',form_description_edit);
+    $('#form_description_delete').on('submit',form_description_delete);
+
+    $('#table_descriptions').on('click', 'tr', load_piezas);
+
     $body.on('click','[data-pieza_crear]',modal_pieza_crear);
     $body.on('click','[data-pieza_editar]',modal_pieza_editar);
     $body.on('click','[data-pieza_eliminar]',modal_pieza_eliminar);
@@ -14,9 +33,182 @@ function main() {
     $body.on('click','#pieza_infinito',pieza_infinito_on_check);
 }
 
+// DESCRIPTIONS
+
+function load_descriptions() {
+    $.ajax({
+        url : $('#url_load_descriptions').val()
+    }).done(function (data) {
+        var $table_descriptions = $('#table_descriptions');
+        $table_descriptions.html('');
+        $to_append = '';
+        $.each(data.data,function (k,v) {
+            $to_append +=
+                '<tr data-description_id="'+v.id+'">'+
+                '<td>'+v.name+'</td>'+
+                '<td>'+v.description+'</td>'+
+                '<td>'+(v.state==1?"Activa":"Inactiva")+'</td>'+
+                '<td>'+
+                '<button class="btn btn-info btn-sm" data-description_edit="'+v.id+'"'+
+                'data-description_nombre="'+v.name+'"'+
+                'data-description_description="'+v.description+'"'+
+                'data-description_estado="'+v.state+'">' +
+                '<i class="fa fa-pencil"></i> Editar' +
+                '</button>'+
+                '<button class="btn btn-danger btn-sm" data-description_delete="'+v.id+'"'+
+                'data-description_name="'+v.name+'">'+
+                '<i class="fa fa-trash-o"></i> Eliminar'+
+                '</button>'+
+                '</td>'+
+                '</tr>';
+        });
+
+        $table_descriptions.append($to_append);
+    });
+}
+function modal_description_create() {
+    $modal_description_create.modal();
+}
+
+function modal_description_edit() {
+    var $data = $(this).data();
+
+    var $description_edit = $data.description_edit;
+    var $description_name = $data.description_name;
+    var $description_description = $data.description_description;
+    var $description_state = $data.description_state;
+
+    $modal_description_edit.find('[name=description_id]').val($description_edit);
+    $modal_description_edit.find('[name=description_name]').val($description_name);
+    $modal_description_edit.find('[name=description_description]').val($description_description);
+    $modal_description_edit.find('[name=description_state]').prop('checked',$description_state==1);
+    $modal_description_edit.modal();
+}
+
+function modal_description_delete() {
+    var $data = $(this).data();
+    var $description_delete = $data.description_delete;
+    var $description_name   = $data.description_name;
+
+    $modal_description_delete.find('[name=description_id]').val($description_delete);
+    $modal_description_delete.find('[name=description_name]').val($description_name);
+    $modal_description_delete.modal();
+}
+
+function form_description_create() {
+    event.preventDefault();
+
+    var $btn_create_cancel = $('#btn_create_cancel');
+    var $btn_create_accept = $('#btn_create_accept');
+    $btn_create_cancel.prop('disabled',true);
+    $btn_create_accept.prop('disabled',true);
+    var data = new FormData(this);
+    $.ajax({
+     url: $(this).attr('action'),
+     type: $(this).attr('method'),
+     data: data,
+     processData: false,
+     contentType: false
+    }).done(function (data) {
+     if( data.success ){
+         showmessage(data.message,1);
+         load_descriptions();
+         setTimeout(function () {
+             $modal_description_create.modal('hide');
+             $modal_description_create.find('[name=description_name]').val('');
+             $modal_description_create.find('[name=description_description]').val('');
+             $modal_description_create.find('[name=description_state]').prop('checked',true);
+
+             $btn_create_cancel.prop('disabled',false);
+             $btn_create_accept.prop('disabled',false);
+         },500);
+     }else{
+         showmessage(data.message,0);
+         $btn_create_cancel.prop('disabled',false);
+         $btn_create_accept.prop('disabled',false);
+     }
+    });
+}
+
+function form_description_edit() {
+    event.preventDefault();
+
+    var $btn_edit_cancel = $('#btn_edit_cancel');
+    var $btn_edit_accept = $('#btn_edit_accept');
+    $btn_edit_cancel.prop('disabled',true);
+    $btn_edit_accept.prop('disabled',true);
+    var data = new FormData(this);
+    $.ajax({
+     url: $(this).attr('action'),
+     type: $(this).attr('method'),
+     data: data,
+     processData: false,
+     contentType: false
+    }).done(function (data) {
+     if( data.success ){
+         showmessage(data.message,1);
+         load_descriptions();
+         setTimeout(function () {
+             $modal_description_edit.modal('hide');
+             $btn_edit_cancel.prop('disabled',false);
+             $btn_edit_accept.prop('disabled',false);
+         },500);
+     }else{
+         showmessage(data.message,0);
+         $btn_edit_cancel.prop('disabled',false);
+         $btn_edit_accept.prop('disabled',false);
+     }
+    });
+}
+
+function form_description_delete() {
+    event.preventDefault();
+
+    var $btn_delete_cancel = $('#btn_delete_cancel');
+    var $btn_delete_accept = $('#btn_delete_accept');
+    $btn_delete_cancel.prop('disabled',true);
+    $btn_delete_accept.prop('disabled',true);
+    var data = new FormData(this);
+    $.ajax({
+     url: $(this).attr('action'),
+     type: $(this).attr('method'),
+     data: data,
+     processData: false,
+     contentType: false
+    }).done(function (data) {
+     if( data.success ){
+         showmessage(data.message,1);
+         load_descriptions();
+         setTimeout(function () {
+             $modal_description_delete.modal('hide');
+             $btn_delete_cancel.prop('disabled',false);
+             $btn_delete_accept.prop('disabled',false);
+         },500);
+     }else{
+         showmessage(data.message,0);
+         $btn_delete_cancel.prop('disabled',false);
+         $btn_delete_accept.prop('disabled',false);
+     }
+    });
+}
+// DESCRIPTIONS
+
 function load_piezas() {
+    // Global variable
+    $description_id = $(this).data('description_id');
+    var $btn_add_piece = $('#btn_add_piece');
+    $btn_add_piece.html('');
+    $btn_add_piece.append(
+        '<button class="btn btn-success btn-sm" data-pieza_crear>'+
+        '<i class="fa fa-plus-square"></i> Nueva pieza'+
+        '</button>'
+    );
+    piezas();
+}
+
+function piezas() {
     var $table_piezas = $('#table_piezas');
-    var $url = $('#url_pieza_listar').val();
+    var $url = $('#url_pieza_listar').val()+'/'+$description_id;
     $table_piezas.html('');
 
     $.ajax({
@@ -30,7 +222,7 @@ function load_piezas() {
                     '<tr>'+
                     '<td>'+ v.pieTipo+ '</td>'+
                     '<td>'+ v.pieMultiplo+ '</td>'+
-                    '<td>'+ ((v.pieInicial)?v.pieInicial:'') +'</td>'+
+                    '<td>'+ ((v.pieFlag==0)?v.pieInicial:'') +'</td>'+
                     '<td>'+ ((v.pieFinal==99999)?'Infinito':(v.pieFinal?v.pieFinal:''))+ '</td>'+
                     '<td>'+ ((v.pieEstado==1)?'Activa':'Inactiva')+ '</td>'+
                     '<td>'+
@@ -367,6 +559,9 @@ $('#form_pieza').validate({
                 data :{
                     id : function(){
                         return $('#pieza_id').val();
+                    },
+                    description_id : function () {
+                        return $description_id;
                     }
                 }
             }
@@ -379,6 +574,9 @@ $('#form_pieza').validate({
                 data :{
                     id : function(){
                         return $('#pieza_id').val();
+                    },
+                    description_id : function () {
+                        return $description_id;
                     }
                 }
             }
@@ -405,6 +603,9 @@ $('#form_pieza').validate({
                 data :{
                     id : function(){
                         return $('#pieza_id').val();
+                    },
+                    description_id : function () {
+                        return $description_id;
                     }
                 }
             }
@@ -439,9 +640,11 @@ $('#form_pieza').validate({
         var $ELIMINAR = 3;
         var $method = 'post';
         var $url;
-
-        if( $modal_number == $CREAR )
+        var data = new FormData(form);
+        if( $modal_number == $CREAR ) {
             $url = $('#url_pieza_crear').val();
+            data.append('description_id',$description_id);
+        }
         else if ( $modal_number == $EDITAR )
             $url = $('#url_pieza_editar').val();
         else if( $modal_number == $ELIMINAR )
@@ -456,13 +659,13 @@ $('#form_pieza').validate({
         $.ajax({
             url: $url,
             method: $method,
-            data: new FormData(form),
+            data: data,
             dataType: "JSON",
             processData: false,
             contentType: false
         }).done(function (data) {
             if (data.success == 'true') {
-                load_piezas();
+                piezas();
                 showmessage(data.message, 1);
                 setTimeout(function () {
                     close_modal();

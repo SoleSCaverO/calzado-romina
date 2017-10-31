@@ -70,6 +70,8 @@ class TipoCalculoController extends Controller
         $dsubatipocal = DSubATipoC::where('tipocalId',$tcalId)->first();
         if( !is_null($dsubatipocal) )
             return ['success'=>'false','message'=>'No puede eliminar el tipo de cálculo porque exiten subáreas asociadas.'];
+        else
+            return ['success'=>'false','message'=>'No puede eliminar el tipo de cálculo por configuración interna del sistema.'];
 
         $tipocal = TipoCalculo::find($tcalId);
         $tipocal->delete();

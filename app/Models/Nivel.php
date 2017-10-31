@@ -9,7 +9,7 @@ class Nivel extends Model
     protected $table = 'nivel';
     protected $primaryKey = 'nivId';
     protected $fillable = ['nivId','nivDescripcion','nivNombre','nivCondicion','nivInicio','nivFin','nivEstado',
-                           'dsatipocal','subamId','tipocalId','nivFlag'];
+                           'dsatipocal','subamId','tipocalId','nivFlag','description_id'];
     public $timestamps = false;
 
     public function precios()

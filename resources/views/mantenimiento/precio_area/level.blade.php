@@ -104,12 +104,12 @@
         <a href="{{ route('precio_area') }}" class="btn btn-warning btn-sm"><i class="fa fa-backward"></i>  Volver</a>
     </div>
 
-    <input type="hidden" id="url_nivel_listar" value="{{ route('precio_area.nivel.list',['','']) }}">
+    <input type="hidden" id="url_nivel_listar" value="{{ route('precio_area.nivel.list',['','','']) }}">
     <input type="hidden" id="url_nivel_crear" value="{{ route('precio_area.nivel.create') }}">
     <input type="hidden" id="url_nivel_editar" value="{{ route('precio_area.nivel.edit') }}">
     <input type="hidden" id="url_nivel_eliminar" value="{{ route('precio_area.nivel.delete') }}">
 
-    <input type="hidden" id="url_precio_area_piezas" value="{{ route('precio_area.piezas') }}">
+    <input type="hidden" id="url_precio_area_piezas" value="{{ route('precio_area.piezas','') }}">
     <input type="hidden" id="url_precio_area_listar" value="{{ route('precio_area.data',['','','']) }}">
     <input type="hidden" id="url_precio_area_crear" value="{{ route('precio_area.create') }}">
     <input type="hidden" id="url_precio_area_editar" value="{{ route('precio_area.edit') }}">
@@ -130,6 +130,7 @@
                         {{ csrf_field() }}
                         <input type="hidden" name="subarea_menor_id" id="subarea_menor_id" value="{{$subarea_menor_id}}">
                         <input type="hidden" name="tipo_calculo_id" id="tipo_calculo_id" value="{{$tipo_calculo_id}}">
+                        <input type="hidden" name="description_id" id="description_id" value="{{ $description_id }}">
                         <input type="hidden" name="nivel_id" id="nivel_id">
 
                         <div class="row" id="row_nivel_nombre">
@@ -207,9 +208,9 @@
                             </div>
                         </div>
 
-                        <div class="row" id="row_precio_area_nombre">
+                        <!-- div class="row" id="row_precio_area_nombre">
 
-                        </div>
+                        </div -->
 
                         <div class="row" id="row_precio_area_tipo">
 

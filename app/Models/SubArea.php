@@ -50,7 +50,10 @@ class SubArea extends Model
         select('d.ddatcDescripcion','d.ddatcNombre')->
         distinct('d.ddatcDescripcion')->
         where(['s.subaId'=>$subaId,'n.nivFlag'=>0])->
+        whereNotNull('n.description_id')->
         orderBy('d.ddatcDescripcion')->get();
+
+        $descriptions = Description::where('state',1)->get();
 
         return $precios;
     }
@@ -68,14 +71,4 @@ class SubArea extends Model
 
         return $precio_checked;
     }
-
-/*
-    public function getProcesoAttribute()
-    {
-        $subaId  = $this->attributes['subaId'];
-        $proceso = Proceso::where('subaId',$subaId)->first();
-
-        return $proceso;
-    }
-*/
 }

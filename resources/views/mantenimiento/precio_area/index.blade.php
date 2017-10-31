@@ -72,13 +72,6 @@
                             </button>
                         </div>
                     </div>
-
-                    <div class="col-md-4">
-                        <div class="col-md-3"></div>
-                        <div class="col-md-9" id="redirect_to_level">
-
-                        </div>
-                    </div>
                 </div>
             </div>
         </form>
@@ -88,42 +81,63 @@
     <div class="row hidden_it" id="precio-area-data">
         <div class="x_panel">
             <div class="x_title">
-                <h2>
+                <h2 id="title_data">
                     Listado de datos
                 </h2>
                 <div class="clearfix"></div>
             </div>
             <div class="x_content">
-                <div class="col-md-12" id="div-button-precio-area-crear">
+                <div id="table_block_data">
+                    <div class="col-md-12" id="div-button-precio-area-crear">
 
+                    </div>
+                    <div class="col-md-12 table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Tipo de precio</th>
+                                <th>Precio/Docena</th>
+                                <th>Precio/Par</th>
+                                <th>Condición</th>
+                                <th>Precio/Par</th>
+                                <th>Estado</th>
+                                <th>Acción</th>
+                            </tr>
+                            </thead>
+                            <tbody id="table-precio-area">
+
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-                <div class="col-md-12 table-responsive">
+
+                <div id="table_block_descriptions">
+                    <div class="col-md-12 table-responsive">
                     <table class="table table-hover">
                         <thead>
                         <tr>
                             <th>Nombre</th>
                             <th>Descripción</th>
-                            <th>Tipo de precio</th>
-                            <th>Precio/Docena</th>
-                            <th>Precio/Par</th>
-                            <th>Condición</th>
-                            <th>Precio/Par</th>
                             <th>Estado</th>
                             <th>Acción</th>
                         </tr>
                         </thead>
-                        <tbody id="table-precio-area">
+                        <tbody id="table_descriptions">
 
                         </tbody>
                     </table>
+                </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <input type="hidden" id="url_descriptions" value="{{ route('description.data') }}">
     <input type="hidden" id="url-subareas" value="{{ route('precio_area.subareas','') }}">
     <input type="hidden" id="url-subareas-menores" value="{{ route('precio_area.subareas_menores','') }}">
-    <input type="hidden" id="url-precio-area-niveles" value="{{ route('precio_area.levels',['','']) }}">
+    <input type="hidden" id="url-precio-area-niveles" value="{{ route('precio_area.levels',['','','']) }}">
 
     <input type="hidden" id="url-precio-area-crear"    value="{{ route('precio_area.create') }}">
     <input type="hidden" id="url-precio-area-editar"   value="{{ route('precio_area.edit') }}">

@@ -112,8 +112,7 @@ class PrecioAreaController extends Controller
 
         if(  $nivId == 0 ) { // Normal o Nivel sin id_nivel
             $nivel = Nivel::where('subamId',$subarea_menor_id)->first();
-            if( is_null($nivel) )
-            {
+            if( is_null($nivel) ) {
                 $dsubatipocal = DSubATipoC::where('subamId',$subarea_menor_id)->where('tipocalId',$tipocalId)->first();
                 $nivel = Nivel::create([
                     'dsatipocal' => $dsubatipocal->dsatipocal,
@@ -157,16 +156,17 @@ class PrecioAreaController extends Controller
                 return ['success'=>'false','message'=>'Ya existe un precio con ese tipo de pieza.'];
         }
 
-        if ($tipoPrecio == 1) {// FIJO
+        if ($tipoPrecio == 1 ) {// FIJO
             $ddatosCalculo = DDatosCalculo::create([
                 'nivId' => $nivel->nivId,
                 'tipoPrecio' => $tipoPrecio,
                 'ddatcNombre' => $ddatcNombre,
                 'ddatcDescripcion' => $ddatcDescripcion,
                 'ddatcPrecioDocena' => $ddatcPrecioDocena,
-                'ddatcEstado' => $ddatcEstado
+                'ddatcEstado' => $ddatcEstado,
+                'pieId'=>$pieId?$pieId:null
             ]);
-        } else if ($tipoPrecio == 2) {// NORMAL VARIABLE
+        } else {// NORMAL VARIABLE
             $ddatosCalculo = DDatosCalculo::create([
                 'nivId' => $nivel->nivId,
                 'tipoPrecio' => $tipoPrecio,
@@ -256,6 +256,10 @@ class PrecioAreaController extends Controller
         $ddatosCalculo->ddatcPrecioDocena = $ddatcPrecioDocena;
         $ddatosCalculo->ddatcEstado       = $ddatcEstado;
 
+        if( $pieId ){
+            $ddatosCalculo->pieId                = $pieId;
+        }
+
         // if ($tipoPrecio == 1) // FIJO TODO: DATA OUTSIDE OF 'IF' (ALL DATA WAS GOT OUT)
         if ($tipoPrecio == 2) // VARIABLE
         {
@@ -263,7 +267,6 @@ class PrecioAreaController extends Controller
             $ddatosCalculo->ddatcMayorCondicion  = $ddatcMayorCondicion;
             $ddatosCalculo->ddatcDatoCondicion   = $ddatcDatoCondicion;
             $ddatosCalculo->ddatcPrecioCondicion = $ddatcPrecioCondicion;
-            $ddatosCalculo->pieId                = $pieId;
         }
         $ddatosCalculo->save();
 
@@ -284,24 +287,25 @@ class PrecioAreaController extends Controller
         return ['success' => 'true', 'message' => 'Dato eliminado correctamente','subarea_menor_id'=>$subarea_menor_id,'tipo_calculo_id'=>$tipocalId];
     }
 
-    public function piezas()
+    public function piezas( $description_id )
     {
-        $piezas = Pieza::where('pieEstado',1)->orderBy('pieTipo')->get();
+        $piezas = Pieza::where('description_id',$description_id)->where('pieEstado',1)->orderBy('pieTipo')->get();
 
         return ['success'=>'true','data'=>$piezas];
     }
 
-    public function levels($subarea_menor_id, $tipo_calculo_id )
+    public function levels($subarea_menor_id, $tipo_calculo_id, $description_id )
     {
-        $niveles = Nivel::where(['subamId'=>$subarea_menor_id,'tipocalId'=>$tipo_calculo_id,'nivFlag'=>1])->
+        $niveles = Nivel::where('description_id',$description_id)->where(['subamId'=>$subarea_menor_id,'tipocalId'=>$tipo_calculo_id,'nivFlag'=>1])->
                           orderBy('nivNombre','desc')->get();
+        $piezas  = Pieza::where('description_id',$description_id)->where('pieEstado',1)->get();
 
-        return view('mantenimiento.precio_area.level')->with(compact('subarea_menor_id','tipo_calculo_id','niveles'));
+        return view('mantenimiento.precio_area.level')->with(compact('subarea_menor_id','tipo_calculo_id','niveles','piezas','description_id'));
     }
 
-    public function levels_list( $subarea_menor_id, $tipo_calculo_id )
+    public function levels_list( $subarea_menor_id, $tipo_calculo_id, $description_id )
     {
-        $niveles = Nivel::where(['subamId'=>$subarea_menor_id,'tipocalId'=>$tipo_calculo_id,'nivFlag'=>1])->
+        $niveles = Nivel::where('description_id',$description_id)->where(['subamId'=>$subarea_menor_id,'tipocalId'=>$tipo_calculo_id,'nivFlag'=>1])->
                           orderBy('nivNombre','desc')->get();
 
         return ['success'=>'true','data'=>$niveles];
@@ -319,10 +323,11 @@ class PrecioAreaController extends Controller
         $nivel_infinito = $request->get('nivel_infinito');
         $nivel_infinito = ($nivel_infinito == 'on')?1:0;
         $nivEstado      = $request->get('nivel_estado');
+        $description_id = $request->get('description_id');
         $nivEstado      = ($nivEstado == 'on')?1:0;
         $nivDescripcion = @$nivDescripcion?@$nivDescripcion : $nivNombre;
 
-        $nivel = Nivel::where('nivNombre',$nivNombre)->where('subamId',$subamId)->first();
+        $nivel = Nivel::where('description_id',$description_id )->where('nivNombre',$nivNombre)->where('subamId',$subamId)->first();
         if( $nivel <> null )
             return ['success'=>'false','message'=>'Ya existe un nivel con ese nombre'];
 
@@ -342,6 +347,7 @@ class PrecioAreaController extends Controller
 
         $dsuba = DSubATipoC::where('subamId', $subamId)->where('tipocalId',$tipocalId)->first();
         $nivel = Nivel::create([
+            'description_id' => $description_id,
             'nivDescripcion'=>$nivDescripcion,
             'nivNombre'=>$nivNombre,
             'nivCondicion'=>$nivCondicion,
@@ -371,9 +377,10 @@ class PrecioAreaController extends Controller
         $nivel_infinito = $request->get('nivel_infinito');
         $nivel_infinito = ($nivel_infinito == 'on')?1:0;
         $nivEstado      = $request->get('nivel_estado');
+        $description_id = $request->get('description_id');
         $nivEstado      = ($nivEstado == 'on')?1:0;
 
-        $nivel = Nivel::where('nivNombre',$nivNombre)->where('subamId',$subamId)->first();
+        $nivel = Nivel::where('description_id',$description_id)->where('nivNombre',$nivNombre)->where('subamId',$subamId)->first();
         if( !is_null($nivel) &&  $nivel->nivId <> $nivId )
             return ['success'=>'false','message'=>'Ya existe un nivel con ese nombre'];
 

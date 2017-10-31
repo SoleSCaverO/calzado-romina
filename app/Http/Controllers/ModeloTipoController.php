@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\DDatosCalculo;
 use App\Models\DetalleModeloDatos;
 use App\Models\DetalleModeloDefecto;
+use App\Models\DSubATipoC;
 use App\Models\Modelo;
 use App\Models\Nivel;
 use App\Models\Pieza;
@@ -18,7 +19,20 @@ class ModeloTipoController extends Controller
     function index( $perfilado = null )
     {
         $modelos  = Modelo::take(11)->get();
-        $subareas = Subarea::where('subaEstado',1)->get();
+
+        $subareas = collect();
+        if( $perfilado ){
+            $subareas_menores = SubareaMenor::where('subamEstado',1)->get();
+            foreach ($subareas_menores as $item ){
+                $dsuba = DSubATipoC::where('subamId',$item->subamId)->where('tipocalId',2)->first();
+                if( $dsuba ){
+                    $subareas->push($item->subarea);
+                }
+            }
+            $subareas = $subareas->unique();
+        }else
+            $subareas = Subarea::where('subaEstado',1)->get();
+
         return view('mantenimiento.modelo_tipo.index')->with(compact('modelos','subareas','perfilado'));
     }
 

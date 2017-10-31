@@ -13,7 +13,8 @@ var $piezas_fines = [];
 function main() {
     $modal_nivel = $('#modal_nivel');
     $modal_precio_area = $('#modal_precio_area');
-    piezas();
+    var $description_id = $('#description_id').val();
+    piezas($description_id);
     $body = $('body');
     $body.on('click','[data-nivel_crear]',modal_nivel_crear);
     $body.on('click','[data-nivel_editar]',modal_nivel_editar);
@@ -35,7 +36,8 @@ function load_niveles() {
     var $table_niveles = $('#table_niveles');
     var $subarea_menor_id = $('#subarea_menor_id').val();
     var $tipo_calculo_id = $('#tipo_calculo_id').val();
-    var $url = $('#url_nivel_listar').val()+'/'+$subarea_menor_id+'/'+$tipo_calculo_id;
+    var $description_id =  $('#description_id').val();
+    var $url = $('#url_nivel_listar').val()+'/'+$subarea_menor_id+'/'+$tipo_calculo_id+'/'+$description_id;
     $table_niveles.html('');
 
     $.ajax({
@@ -399,7 +401,6 @@ function load_data() {
                     '<td>'+v.pieza+'</td>'+
                     '<td>'+$tipo_precio+'</td>'+
                     $td_according_tipo_precio+
-                    '<td>'+((v.ddatcPrecioDocena!=null)?'S/. '+(v.ddatcPrecioDocena/12).toFixed(2):'')+'</td>'+
                     '<td>'+((v.ddatcEstado==1)?'Activo':'Inactivo')+'</td>'+
                     '<td>'+
                     '<button class="btn btn-info btn-sm" data-precio_area_editar="'+v.ddatcId+'"'+
@@ -424,8 +425,8 @@ function load_data() {
     });
 }
 
-function piezas() {
-    var $url = $('#url_precio_area_piezas').val();
+function piezas( $description_id ) {
+    var $url = $('#url_precio_area_piezas').val()+'/'+$description_id;
     $.ajax({
         url:$url,
         type:'get'
@@ -619,22 +620,23 @@ function precio_area_tipo_precio() {
 
     clear_rows_data('');
     if ($precio_area_tipo_precio == $PRECIO_FIJO) {
-        row_precio_area_nombre();
+        //row_precio_area_nombre();
         row_precio_area_precio('par');
+    }else if($precio_area_tipo_precio == $PRECIO_VARIABLE){
+        row_precio_area_precio('docena');
     }
 
-    if ( $precio_area_tipo_precio == $PRECIO_VARIABLE ) {
+    if ($precio_area_tipo_precio == $PRECIO_FIJO || $precio_area_tipo_precio == $PRECIO_VARIABLE  ) {
         row_precio_area_tipo();
         var $precio_area_tipo = $('#pieza_id');
         $precio_area_tipo.html('');
-        for( var i=0;i<$piezas_ids.length; i++  )
-            $to_append += '<option value="'+$piezas_ids[i]+'" >'+$piezas_nombres[i]+'</option>';
+        for (var i = 0; i < $piezas_ids.length; i++)
+            $to_append += '<option value="' + $piezas_ids[i] + '" >' + $piezas_nombres[i] + '</option>';
         $precio_area_tipo.append($to_append);
 
         start_selectpicker($precio_area_tipo);
         row_precio_area_piezas_inicio();
         row_precio_area_piezas_fin();
-        row_precio_area_precio('docena');
     }
 }
 
@@ -684,40 +686,35 @@ function precio_area_editar() {
     clear_rows_data('row_precio_area_tipo_precio');
     clear_rows_data('row_precio_area_estado');
     if( $pa_tipo == $FIJO ) {
-        row_precio_area_nombre();
         row_precio_area_precio('par');
-        $modal_precio_area.find('[name=precio_area_nombre]').val($pa_nombre);
-        $modal_precio_area.find('[name=precio_area_precio]').val($pa_precio);
     }else {
-        row_precio_area_tipo();
-        var $to_append='';
-        var $index;
-        var $precio_area_tipo = $('#pieza_id');
-        $precio_area_tipo.html('');
-
-        for( var i = 0; i< $piezas_ids.length; i++ ) {
-            if ($pa_pie_id == $piezas_ids[i]) {
-                $to_append += '<option value="' + $piezas_ids[i] + '" selected>' + $piezas_nombres[i] + '</option>';
-                $index = i;
-            }
-            else
-                $to_append += '<option value="' + $piezas_ids[i] + '">' + $piezas_nombres[i] + '</option>';
-        }
-        $precio_area_tipo.append($to_append);
-        //start_selectpicker($precio_area_tipo);
-        $precio_area_tipo.selectpicker();
-        console.log($piezas_nombres[$index]);
-        //$precio_area_tipo.selectpicker('val',$piezas_nombres[$index]);
-        //$precio_area_tipo.selectpicker('refresh');
-
-        //$precio_area_tipo.selectpicker('val','');
-        row_precio_area_piezas_inicio();
-        row_precio_area_piezas_fin();
         row_precio_area_precio('docena');
-        $modal_precio_area.find('[name=precio_area_piezas_inicio]').val($piezas_inicios[$index]);
-        $modal_precio_area.find('[name=precio_area_piezas_fin]').val($piezas_fines[$index]);
-        $modal_precio_area.find('[name=precio_area_precio]').val($pa_precio);
     }
+
+    row_precio_area_tipo();
+    var $to_append='';
+    var $index;
+    var $precio_area_tipo = $('#pieza_id');
+    $precio_area_tipo.html('');
+
+    for( var i = 0; i< $piezas_ids.length; i++ ) {
+        if ($pa_pie_id == $piezas_ids[i]) {
+            $to_append += '<option value="' + $piezas_ids[i] + '" selected>' + $piezas_nombres[i] + '</option>';
+            $index = i;
+        }
+        else
+            $to_append += '<option value="' + $piezas_ids[i] + '">' + $piezas_nombres[i] + '</option>';
+    }
+
+    $precio_area_tipo.append($to_append);
+    $precio_area_tipo.selectpicker();
+    row_precio_area_piezas_inicio();
+    row_precio_area_piezas_fin();
+
+    $modal_precio_area.find('[name=precio_area_piezas_inicio]').val($piezas_inicios[$index]);
+    $modal_precio_area.find('[name=precio_area_piezas_fin]').val($piezas_fines[$index]==99999?'Infinito':$piezas_fines[$index]);
+    $modal_precio_area.find('[name=precio_area_precio]').val($pa_precio);
+
     if( $pa_estado == $ACTIVO )
         row_precio_area_estado_checked();
     else
@@ -760,7 +757,7 @@ function form_precio_area() {
         return;
     }
 
-    if( $precio_area_tipo_precio  == 2 ){
+    if( $precio_area_tipo_precio  == 2 || $precio_area_tipo_precio  == 1 ){
         if( $precio_area_tipo == null && $number_modal == 4 ) {
             showmessage('Debe seleccionar el tipo de pieza.', 0);
             return;

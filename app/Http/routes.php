@@ -72,14 +72,14 @@ Route::group(['prefix'=>'precio_area'],function (){
     Route::get('/areas-menores/{subaId}','PrecioAreaController@subareas_menores')->name('precio_area.subareas_menores');
 
     Route::get('/datos/{subamId}/{tipocalId}/{nivId?}','PrecioAreaController@data')->name('precio_area.data');
-    Route::get('/niveles/{subamId}/{tipocalId}','PrecioAreaController@levels')->name('precio_area.levels');
+    Route::get('/niveles/{subamId}/{tipocalId}/{description_id}','PrecioAreaController@levels')->name('precio_area.levels');
     Route::post('/datos/crear','PrecioAreaController@create')->name('precio_area.create');
     Route::post('/datos/editar','PrecioAreaController@edit')->name('precio_area.edit');
     Route::post('/datos/eliminar','PrecioAreaController@delete')->name('precio_area.delete');
-    Route::get('/piezas','PrecioAreaController@piezas')->name('precio_area.piezas');
+    Route::get('/piezas/{description_id}','PrecioAreaController@piezas')->name('precio_area.piezas');
 
     Route::group(['prefix'=>'niveles'],function(){
-        Route::get('/list/{subamId}/{tipocalId}','PrecioAreaController@levels_list')->name('precio_area.nivel.list');
+        Route::get('/list/{subamId}/{tipocalId}/{description_id}','PrecioAreaController@levels_list')->name('precio_area.nivel.list');
         Route::post('/crear','PrecioAreaController@level_create')->name('precio_area.nivel.create');
         Route::post('/editar','PrecioAreaController@level_edit')->name('precio_area.nivel.edit');
         Route::post('/eliminar','PrecioAreaController@level_delete')->name('precio_area.nivel.delete');
@@ -88,7 +88,7 @@ Route::group(['prefix'=>'precio_area'],function (){
 
 Route::group(['prefix'=>'piezas'],function (){
     Route::get('/','PiezaController@index')->name('piezas');
-    Route::get('/list','PiezaController@pieza_list')->name('piezas.list');
+    Route::get('/list/{description_id}','PiezaController@pieza_list')->name('piezas.list');
     Route::post('/create','PiezaController@create')->name('piezas.create');
     Route::post('/edit','PiezaController@edit')->name('piezas.edit');
     Route::post('/delete','PiezaController@delete')->name('piezas.delete');
@@ -102,7 +102,13 @@ Route::group(['prefix'=>'modelo-tipo'],function (){
     Route::get('/{perfilado?}','ModeloTipoController@index')->name('modelo_tipo');
     Route::get('/modelos/{model_description}','ModeloTipoController@model_description')->name('modelo_tipo.modelos');
     Route::post('/create','ModeloTipoController@create')->name('modelo_tipo.create');
-    Route::get('/perfilado','ModeloTipoController@perfilado')->name('modelo_tipo.perfilado');
+});
+
+Route::group(['prefix'=>'descripcion'],function (){
+    Route::get('/data','DescriptionController@data')->name('description.data');
+    Route::post('/create','DescriptionController@create')->name('description.create');
+    Route::post('/edit','DescriptionController@edit')->name('description.edit');
+    Route::post('/delete','DescriptionController@delete')->name('description.delete');
 });
 
 Route::group(['prefix'=>'planillas'],function () {

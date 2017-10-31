@@ -126,7 +126,6 @@ function select_subareas_menores_change() {
     var $pa_tipo_calculo = $('#pa_tipo_calculo');
     var $precio_area_data = $('#precio-area-data');
     var $url_precio_area_niveles = $('#url-precio-area-niveles').val();
-    var $redirect_to_level = $('#redirect_to_level');
 
     $pa_tipo_calculo.val('');
     $precio_area_data.addClass('hidden_it');
@@ -135,14 +134,8 @@ function select_subareas_menores_change() {
 
     for( var i=0;i<$subareas_menores_ids.length;i++ ){
         if( $subareas_menores_ids[i] == $subaream_id ) {
+            // To obtain tipo calculo name
             $pa_tipo_calculo.val($tipo_calculos_nombres[i]);
-
-            $redirect_to_level.html('');
-            if( $tipo_calculos_ids[i] == 1 ) {
-                var $url = $url_precio_area_niveles+'/'+$subaream_id+'/'+$tipo_calculos_ids[i];
-                var $to_append = '<a class="btn btn-success btn-sm" href="'+$url+'"> Niveles  <i class="fa fa-spinner"></i></a>';
-                $redirect_to_level.append($to_append);
-            }
         }
     }
 }
@@ -173,91 +166,132 @@ function form_precio_area_datos() {
 
 function precio_area_load_data($subarea_id,$tipo_calculo_id) {
     var $form = $('#form-precio-area-datos');
-    var $url = $form.attr('action');
+    var $title_data = $('#title_data');
+    var $url = '';
+    var $table_block_data = $('#table_block_data');
+    var $table_block_descriptions = $('#table_block_descriptions');
 
-    $.ajax({
-        url:  $url+'/'+$subarea_id+'/'+$tipo_calculo_id,
-        type: 'GET'
-    }).done(function (data) {
+    // BLOCK CONTAINING DATOS AND DESCRIPCIONES DE NIVELES
+    var $precio_area_data = $('#precio-area-data');
+    $precio_area_data.removeClass('hidden_it');
 
-        var $precio_area_data = $('#precio-area-data');
-        var $div_button_precio_area_crear= $('#div-button-precio-area-crear');
-        var $table_precio_area= $('#table-precio-area');
-        var $to_append_button;
-        var $to_append = '';
-        $precio_area_data.removeClass('hidden_it');
-        $div_button_precio_area_crear.html('');
-        $table_precio_area.html('');
+    if( $tipo_calculo_id == 1 ){
+        $table_block_data.css('display','block');
+        $table_block_descriptions.css('display','none');
+        $url   = $form.attr('action');
+        $title = 'Listado de datos';
+        $.ajax({
+            url:  $url+'/'+$subarea_id+'/'+$tipo_calculo_id,
+            type: 'GET'
+        }).done(function (data) {
+            var $div_button_precio_area_crear= $('#div-button-precio-area-crear');
+            var $table_precio_area= $('#table-precio-area');
+            var $to_append_button;
+            var $to_append = '';
+            $div_button_precio_area_crear.html('');
+            $table_precio_area.html('');
 
-        $to_append_button =
-            '<button data-precio_area_crear class="btn btn-success btn-sm">' +
-            '<i class="fa fa-plus-square"> </i> Agregar'+
-            '</button>';
-        $div_button_precio_area_crear.append($to_append_button);
+            $to_append_button =
+                '<button data-precio_area_crear class="btn btn-success btn-sm">' +
+                '<i class="fa fa-plus-square"> </i> Agregar'+
+                '</button>';
+            $div_button_precio_area_crear.append($to_append_button);
 
-        if( data.success == 'true' ){
-            $.each(data.data,function (k,v) {
-                var $tipo_precio = '';
-                var $es_tipo_fijo = 0;
-                var $td_according_tipo_precio =
-                    '<td>'+((v.ddatcPrecioDocena!=null)?'S/. '+v.ddatcPrecioDocena:'S/. 0.00')+'</td>'+
-                    '<td>'+((v.ddatcPrecioDocena!=null)?'S/. '+(v.ddatcPrecioDocena/12).toFixed(2):'S/. 0.00')+'</td>';
+            if( data.success == 'true' ){
+                $.each(data.data,function (k,v) {
+                    var $tipo_precio = '';
+                    var $es_tipo_fijo = 0;
+                    var $td_according_tipo_precio =
+                        '<td>'+((v.ddatcPrecioDocena!=null)?'S/. '+v.ddatcPrecioDocena:'S/. 0.00')+'</td>'+
+                        '<td>'+((v.ddatcPrecioDocena!=null)?'S/. '+(v.ddatcPrecioDocena/12).toFixed(2):'S/. 0.00')+'</td>';
 
-                var $con_condicion = 
-                    '<td>'+((v.ddatcMayorCondicion==0?'Menor a ':'Mayor a ')+v.ddatcDatoCondicion)+'</td>'+
-                    '<td>'+(v.ddatcPrecioCondicion?'S/. '+v.ddatcPrecioCondicion:'S/. 0.00')+'</td>';
+                    var $con_condicion =
+                        '<td>'+((v.ddatcMayorCondicion==0?'Menor a ':'Mayor a ')+v.ddatcDatoCondicion)+'</td>'+
+                        '<td>'+(v.ddatcPrecioCondicion?'S/. '+v.ddatcPrecioCondicion:'S/. 0.00')+'</td>';
 
-                if( v.tipoPrecio == 1 ) {
-                    $tipo_precio = 'Fijo';
-                    $es_tipo_fijo = 1;
-                }
-                else if( v.tipoPrecio == 2)
-                    $tipo_precio = 'Variable';
+                    if( v.tipoPrecio == 1 ) {
+                        $tipo_precio = 'Fijo';
+                        $es_tipo_fijo = 1;
+                    }
+                    else if( v.tipoPrecio == 2)
+                        $tipo_precio = 'Variable';
 
-                if( $es_tipo_fijo == 1  ){
-                    $td_according_tipo_precio =
-                        '<td></td>'+
-                        '<td>'+((v.ddatcPrecioDocena!=null)?'S/. '+v.ddatcPrecioDocena:'')+'</td>';
-                }
+                    if( $es_tipo_fijo == 1  ){
+                        $td_according_tipo_precio =
+                            '<td></td>'+
+                            '<td>'+((v.ddatcPrecioDocena!=null)?'S/. '+v.ddatcPrecioDocena:'')+'</td>';
+                    }
 
-                if( !v.ddatcCondicion  ){
-                     $con_condicion =
-                    '<td></td>'+
-                    '<td></td>';
-                }
-                
-                $to_append +=
-                    '<tr>'+
-                    '<td>'+((v.ddatcDescripcion != null)?v.ddatcDescripcion:'')+'</td>'+
-                    '<td>'+v.ddatcNombre+'</td>'+
-                    '<td>'+$tipo_precio+'</td>'+
-                    $td_according_tipo_precio +
-                    $con_condicion+
-                    '<td>'+((v.ddatcEstado==1)?'Activo':'Inactivo')+'</td>'+
-                    '<td>'+
-                    '<button class="btn btn-info btn-sm" data-pa_editar="'+v.ddatcId+'"'+
-                    'data-pa_nombre="'+v.ddatcDescripcion+'"'+
-                    'data-pa_descripcion="'+v.ddatcNombre+'"'+
-                    'data-pa_tipo="'+v.tipoPrecio+'"'+
-                    'data-pa_precio="'+v.ddatcPrecioDocena+'"'+
-                    'data-pa_condicion="'+v.ddatcCondicion+'"'+
-                    'data-pa_precio_condicion="'+v.ddatcPrecioCondicion+'"'+
-                    'data-pa_dato_condicion="'+v.	ddatcDatoCondicion+'"'+
-                    'data-pa_mayor_condicion="'+v.	ddatcMayorCondicion+'"'+
-                    'data-pa_estado="'+v.ddatcEstado+'">'+
-                    '<i class="fa fa-pencil"></i> Editar'+
-                    '</button>'+
-                    '<button class="btn btn-danger btn-sm" data-pa_eliminar="'+v.ddatcId+'"'+
-                    'data-pa_nombre="'+v.ddatcDescripcion+'">'+
-                    '<i class="fa fa-trash-o"></i> Eliminar'+
-                    '</button>'+
-                    '</td>'+
-                    '</tr>';
-            });
-            $table_precio_area.append($to_append);
-        }else
-            showmessage(data.message,0);
-    });
+                    if( !v.ddatcCondicion  ){
+                        $con_condicion =
+                            '<td></td>'+
+                            '<td></td>';
+                    }
+
+                    $to_append +=
+                        '<tr>'+
+                        '<td>'+((v.ddatcDescripcion != null)?v.ddatcDescripcion:'')+'</td>'+
+                        '<td>'+v.ddatcNombre+'</td>'+
+                        '<td>'+$tipo_precio+'</td>'+
+                        $td_according_tipo_precio +
+                        $con_condicion+
+                        '<td>'+((v.ddatcEstado==1)?'Activo':'Inactivo')+'</td>'+
+                        '<td>'+
+                        '<button class="btn btn-info btn-sm" data-pa_editar="'+v.ddatcId+'"'+
+                        'data-pa_nombre="'+v.ddatcDescripcion+'"'+
+                        'data-pa_descripcion="'+v.ddatcNombre+'"'+
+                        'data-pa_tipo="'+v.tipoPrecio+'"'+
+                        'data-pa_precio="'+v.ddatcPrecioDocena+'"'+
+                        'data-pa_condicion="'+v.ddatcCondicion+'"'+
+                        'data-pa_precio_condicion="'+v.ddatcPrecioCondicion+'"'+
+                        'data-pa_dato_condicion="'+v.	ddatcDatoCondicion+'"'+
+                        'data-pa_mayor_condicion="'+v.	ddatcMayorCondicion+'"'+
+                        'data-pa_estado="'+v.ddatcEstado+'">'+
+                        '<i class="fa fa-pencil"></i> Editar'+
+                        '</button>'+
+                        '<button class="btn btn-danger btn-sm" data-pa_eliminar="'+v.ddatcId+'"'+
+                        'data-pa_nombre="'+v.ddatcDescripcion+'">'+
+                        '<i class="fa fa-trash-o"></i> Eliminar'+
+                        '</button>'+
+                        '</td>'+
+                        '</tr>';
+                });
+                $table_precio_area.append($to_append);
+            }else
+                showmessage(data.message,0);
+        });
+    }else{
+        $table_block_data.css('display','none');
+        $table_block_descriptions.css('display','block');
+        $url = $('#url_descriptions').val();
+        var $url_levels = $('#url-precio-area-niveles').val()+'/'+$subarea_id+'/'+$tipo_calculo_id;
+        $title = 'Listado de descripciones para niveles';
+        $.ajax({
+            url:  $url
+        }).done(function (data) {
+            if( data.success ){
+                var $table_descriptions = $('#table_descriptions');
+                $table_descriptions.html('');
+                var $to_append = '';
+                $.each(data.data,function (k,v) {
+                    if( v.state  ) {
+                        $to_append +=
+                            '<tr>' +
+                            '<td>' + v.name + '</td>' +
+                            '<td>' + v.description + '</td>' +
+                            '<td>' + (v.state == 1 ? "Activa" : "Inactiva") + '</td>' +
+                            '<td>' +
+                            '<a class="btn btn-success btn-sm" href="' + $url_levels + '/' + v.id + '"> Niveles  <i class="fa fa-spinner"></i></a>' +
+                            '</td>' +
+                            '</tr>';
+                    }
+                });
+                $table_descriptions.append($to_append);
+            }else
+                showmessage(data.message,0);
+        });
+    }
+    $title_data.text($title);
 }
 
 function clear_div_inputs($div) {

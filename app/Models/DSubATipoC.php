@@ -10,5 +10,4 @@ class DSubATipoC extends Model
     protected $primaryKey = 'dsatipocal';
     protected $fillable = ['dsatipocal','subamId', 'tipocalId'];
     public $timestamps = false;
-
 }
