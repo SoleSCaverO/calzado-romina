@@ -175,7 +175,7 @@ function precio_area_load_data($subarea_id,$tipo_calculo_id) {
     var $precio_area_data = $('#precio-area-data');
     $precio_area_data.removeClass('hidden_it');
 
-    if( $tipo_calculo_id == 1 ){
+    if( $tipo_calculo_id == 2 ){
         $table_block_data.css('display','block');
         $table_block_descriptions.css('display','none');
         $url   = $form.attr('action');

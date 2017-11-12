@@ -18,13 +18,14 @@ class ModeloTipoController extends Controller
 {
     function index( $perfilado = null )
     {
+        dd('xd');
         $modelos  = Modelo::take(11)->get();
 
         $subareas = collect();
         if( $perfilado ){
             $subareas_menores = SubareaMenor::where('subamEstado',1)->get();
             foreach ($subareas_menores as $item ){
-                $dsuba = DSubATipoC::where('subamId',$item->subamId)->where('tipocalId',2)->first();
+                $dsuba = DSubATipoC::where('subamId',$item->subamId)->where('tipocalId',1)->first();
                 if( $dsuba ){
                     $subareas->push($item->subarea);
                 }
