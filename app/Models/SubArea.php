@@ -43,31 +43,75 @@ class SubArea extends Model
 
     public static function precios( $subaId )
     {
-        $precios = DB::table('subarea as s')->
-        join('subaream as sm','s.subaId','=','sm.subaId')->
+        $precios = Subarea::
+        join('subaream as sm','subarea.subaId','=','sm.subaId')->
         join('nivel as n','sm.subamId','=','n.subamId')->
         join('ddatoscalculo as d','n.nivId','=','d.nivId')->
         select('d.ddatcDescripcion','d.ddatcNombre')->
         distinct('d.ddatcDescripcion')->
-        where(['s.subaId'=>$subaId,'n.nivFlag'=>0])->
-        whereNotNull('n.description_id')->
+        where(['subarea.subaId'=>$subaId,'n.nivFlag'=>0])->
+        whereNull('n.description_id')->
         orderBy('d.ddatcDescripcion')->get();
 
-        $descriptions = Description::where('state',1)->get();
+        $lista_precios = [];
+        $lista_descripciones = [];
+        foreach ( $precios as $precio ){
+            array_push($lista_precios,['ddatcDescripcion'=>$precio['ddatcDescripcion'],'ddatcNombre'=>$precio['ddatcNombre']]);
+            array_push($lista_descripciones,$precio['ddatcDescripcion']);
+        }
 
-        return $precios;
+        $mostrar_descripciones = false;
+        $subarea = SubArea::find($subaId);
+        $subareas_menores = $subarea->subareas_menores;
+        foreach ( $subareas_menores as $subareas_menor ){
+            $dsuba_tipocal = DSubATipoC::where('subamId',$subareas_menor->subamId)->first();
+            if( $dsuba_tipocal->tipocalId == 2 ){
+                $mostrar_descripciones = true;
+            }
+        }
+
+        if(  $mostrar_descripciones ) {
+            $descriptions = Description::where('state', 1)->get();
+            foreach ($descriptions as $description) {
+                if (!in_array($description['description'], $lista_descripciones))
+                    array_push($lista_precios, ['ddatcDescripcion' => $description['name'], 'ddatcNombre' => 'description']);
+            }
+        }
+
+        return $lista_precios;
     }
 
     public static function precio_checked( $modId,$subaId )
     {
-        $precio_checked = DB::table('subarea as s')->
-        join('subaream as sm','s.subaId','=','sm.subaId')->
+        $precio_checked = SubArea::join('subaream as sm','subarea.subaId','=','sm.subaId')->
         join('nivel as n','sm.subamId','=','n.subamId')->
         join('ddatoscalculo as d','n.nivId','=','d.nivId')->
         join('detalle_modelo_datos as dmd','d.ddatcId','=','dmd.ddatcId')->
         select('d.ddatcDescripcion','d.ddatcNombre','dmd.moddatosPiezas')->
         distinct('d.ddatcDescripcion')->
-        where(['s.subaId'=>$subaId,'dmd.modId'=>$modId,'n.nivFlag'=>0])->get();
+        where(['subarea.subaId'=>$subaId,'dmd.modId'=>$modId,'n.nivFlag'=>0])->get();
+
+        if( count($precio_checked) == 0 ){
+            $mostrar_descripcion_checked = false;
+            $subarea = SubArea::find($subaId);
+            $subareas_menores = $subarea->subareas_menores;
+            foreach ( $subareas_menores as $subareas_menor ){
+                $dsuba_tipocal = DSubATipoC::where('subamId',$subareas_menor->subamId)->first();
+                if( $dsuba_tipocal->tipocalId == 2 ){
+                    $mostrar_descripcion_checked = true;
+                }
+            }
+
+            if( $mostrar_descripcion_checked ) {
+                $precio_checked = DetalleModeloDatos::join('descriptions', 'descriptions.id', '=', 'detalle_modelo_datos.description_id')->
+                    where('modId',$modId)->
+                    select(
+                        'descriptions.name as ddatcDescripcion',
+                        'descriptions.description as ddatcNombre',
+                        'detalle_modelo_datos.moddatosPiezas'
+                    )->get();
+            }
+        }
 
         return $precio_checked;
     }

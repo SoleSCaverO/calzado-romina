@@ -84,7 +84,6 @@ function modal_precios() {
         $input_piezas.append($to_append_);
         $green_button = $precio_checked.length;
         $modal_precios.find('[name=pivot]').val($precio_checked);
-
     }else {
         var $to_append = '<div class="row"><div class="col-md-offset-1"><label>Seleccione una descripción</label></div></div>';
         var $checkboxes = $('#checkboxes_precios');

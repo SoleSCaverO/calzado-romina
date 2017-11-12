@@ -8,7 +8,9 @@ class DetalleModeloDatos extends Model
 {
     protected $table = 'detalle_modelo_datos';
     protected $primaryKey = 'moddatosId'; // Considering fee is the primary key
-    protected $fillable = ['moddatosId','modId', 'ddatcId','moddatosEstado','moddatosCondicion','moddatosPiezas','pieId'];
+    protected $fillable = [
+        'moddatosId','modId', 'ddatcId','moddatosEstado','moddatosCondicion','moddatosPiezas','pieId','description_id'
+    ];
     public $timestamps = false;
 
 }

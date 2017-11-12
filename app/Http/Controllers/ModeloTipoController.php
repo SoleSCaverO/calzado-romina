@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DDatosCalculo;
+use App\Models\Description;
 use App\Models\DetalleModeloDatos;
 use App\Models\DetalleModeloDefecto;
 use App\Models\DSubATipoC;
@@ -45,10 +46,22 @@ class ModeloTipoController extends Controller
 
         $pivot   = $request->get('pivot');
         $piezas  = $request->get('numero_piezas');
-        
+
+        // Lógica de descripciones
+        $asociar_a_descripciones = false;
+        $subarea = SubArea::find($subarea_id);
+        $subareas_menores = $subarea->subareas_menores;
+        foreach ( $subareas_menores as $subareas_menor ){
+            $dsuba_tipocal = DSubATipoC::where('subamId',$subareas_menor->subamId)->first();
+            if( $dsuba_tipocal->tipocalId == 2 ){
+                $asociar_a_descripciones = true;
+            }
+        }
+
         if( !is_null($pivot) ){
             if( strlen($pivot)>0 ){
-                $pieza = Pieza::where('pieInicial','<=',$piezas)->where('pieFinal','>=',$piezas)->first();
+                $description = Description::where('name',$pivot)->first();
+                $pieza = Pieza::where('pieInicial','<=',$piezas)->where('pieFinal','>=',$piezas)->where('description_id',$description->id)->first();
                 if( count($pieza) == 0 )
                     return ['success'=>'false','message'=>'El número de piezas no se encuentra en ningún rango.'];
 
@@ -65,6 +78,13 @@ class ModeloTipoController extends Controller
                         $dmd_->moddatosPiezas = $piezas;
                         $dmd_->save();
                     }
+                }
+
+                if( $asociar_a_descripciones ){
+                    $dmd = DetalleModeloDatos::where('modId',$modId)->whereNotNull('description_id')->first();
+                    $dmd->pieId = $pieza->pieId;
+                    $dmd->moddatosPiezas = $piezas;
+                    $dmd->save();
                 }
 
                 return ['success'=>'true','message'=>'Datos guardados correctamente.'];
@@ -100,6 +120,24 @@ class ModeloTipoController extends Controller
                 'moddatosEstado'=>1
             ]);
             $dmd->save();
+        }
+
+        if( $asociar_a_descripciones ){
+            $dmodelo_datos = DetalleModeloDatos::where('modId',$modId)->whereNotNull('description_id')->first();
+            if( $dmodelo_datos ){
+                $dmodelo_datos->delete();
+            }
+
+            $description = Description::where('name',$ddatcId)->first();
+
+            if( count($description)>0 ){
+                $dmd = DetalleModeloDatos::create([
+                    'description_id'=>$description->id,
+                    'modId'=>$modId,
+                    'moddatosEstado'=>1
+                ]);
+                $dmd->save();
+            }
         }
 
         return ['success'=>'true','message'=>'Datos guardados correctamente.'];
