@@ -72,7 +72,7 @@
                                         @if( count($precio_checked)>0 )
                                             <span style="color:black; font-weight: bold">{{ '('.$precio_checked[0]->ddatcNombre.')' }}</span> {{ $precio_checked[0]->ddatcDescripcion.(!is_null($precio_checked[0]->moddatosPiezas)?'- '.$precio_checked[0]->moddatosPiezas.($precio_checked[0]->moddatosPiezas==1?' pieza':' piezas'):'') }}
                                         @else
-                                            <span style="color:black; font-weight: bold">{{ '('.$precios[0]->ddatcNombre.')' }}</span> {{ $precios[0]->ddatcDescripcion }}
+                                            <span style="color:black; font-weight: bold">{{ '('.$precios[0]['ddatcNombre'].')' }}</span> {{ $precios[0]['ddatcDescripcion'] }}
                                         @endif
 
                                     </button>
