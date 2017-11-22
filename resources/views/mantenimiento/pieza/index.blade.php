@@ -5,7 +5,7 @@
         <div class="x_panel">
             <div class="x_title">
                 <h2>
-                    Lista de descriptiones
+                    Lista de descripciones
                 </h2>
                 <div class="clearfix"></div>
             </div>
@@ -56,7 +56,7 @@
         <div class="x_panel">
             <div class="x_title">
                 <h2>
-                    TIPOS DE PIEZAS PARA CALCULO X NIVELES
+                    LISTA DE TIPO DE PIEZA X CADA DESCRIPCION
                 </h2>
                 <div class="clearfix"></div>
             </div>

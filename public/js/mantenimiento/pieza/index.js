@@ -50,9 +50,9 @@ function load_descriptions() {
                 '<td>'+(v.state==1?"Activa":"Inactiva")+'</td>'+
                 '<td>'+
                 '<button class="btn btn-info btn-sm" data-description_edit="'+v.id+'"'+
-                'data-description_nombre="'+v.name+'"'+
+                'data-description_name="'+v.name+'"'+
                 'data-description_description="'+v.description+'"'+
-                'data-description_estado="'+v.state+'">' +
+                'data-description_state="'+v.state+'">' +
                 '<i class="fa fa-pencil"></i> Editar' +
                 '</button>'+
                 '<button class="btn btn-danger btn-sm" data-description_delete="'+v.id+'"'+
@@ -195,6 +195,7 @@ function form_description_delete() {
 
 function load_piezas() {
     // Global variable
+    select_table_row(this);
     $description_id = $(this).data('description_id');
     var $btn_add_piece = $('#btn_add_piece');
     $btn_add_piece.html('');

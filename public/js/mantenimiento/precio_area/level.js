@@ -161,10 +161,10 @@ function nivel_infinito_on_check (){
 function row_nivel_infinito_checked() {
     var $row_nivel_infinito = $('#row_nivel_infinito');
     var $to_append =
-        '<div class="col-md-1">'+
+        '<div class="col-md-1 col-md-offset-1">'+
         '<input type="checkbox"  name="nivel_infinito" id="nivel_infinito" class="form-control" checked>'+
         '</div>'+
-        '<div class="col-md-11">'+
+        '<div class="col-md-4">'+
         '<label class="beside_check">Infinito</label>'+
         '</div>';
     $row_nivel_infinito.html('');
@@ -296,8 +296,10 @@ function modal_nivel_editar() {
     $modal_nivel.find('[name=nivel_descripcion]').val($nivel_descripcion);
     $modal_nivel.find('[name=nivel_condicion]').val($nivel_condicion);
     $modal_nivel.find('[name=nivel_inicio]').val($nivel_inicio);
-    if(  $nivel_fin == 99999 )
+    if(  $nivel_fin == 99999 ) {
         row_nivel_infinito_checked();
+        $modal_nivel.find('[name=nivel_fin]').attr('readonly','true');
+    }
     else {
         $modal_nivel.find('[name=nivel_fin]').val($nivel_fin);
         row_nivel_infinito_unchecked();
@@ -565,7 +567,7 @@ function row_precio_area_precio($tipo) {
     var $to_append =
             '<div class="col-md-6 form-group">'+
             '<label>Precio x '+$tipo+'</label>'+
-            '<input type="number" step="any" min="0" name="precio_area_precio" class="form-control" required>'+
+            '<input type="number" step="any" name="precio_area_precio" class="form-control" required>'+
             '</div>'
         ;
     $row_precio_area_precio.append($to_append);
@@ -711,8 +713,8 @@ function precio_area_editar() {
     row_precio_area_piezas_inicio();
     row_precio_area_piezas_fin();
 
-    $modal_precio_area.find('[name=precio_area_piezas_inicio]').val($piezas_inicios[$index]);
-    $modal_precio_area.find('[name=precio_area_piezas_fin]').val($piezas_fines[$index]==99999?'Infinito':$piezas_fines[$index]);
+    $modal_precio_area.find('[name=precio_area_piezas_inicio]').val($piezas_inicios[$index]?$piezas_inicios[$index]:'Sin nº piezas inicio');
+    $modal_precio_area.find('[name=precio_area_piezas_fin]').val($piezas_fines[$index]==99999?'Infinito':($piezas_fines[$index]?$piezas_fines[$index]:'Sin nº piezas fin'));
     $modal_precio_area.find('[name=precio_area_precio]').val($pa_precio);
 
     if( $pa_estado == $ACTIVO )

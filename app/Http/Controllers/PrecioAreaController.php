@@ -250,6 +250,13 @@ class PrecioAreaController extends Controller
             return ['success'=>'false','message'=>'Ya existe un precio con esa descripción'];
         }
 
+         if( $pieId ){
+            $ddat = dDatosCalculo::find($ddatcId);
+
+            if( !is_null($ddat)  and $ddat->pieId  <>  $pieId )
+                return ['success'=>'false','message'=>'Ya existe un precio con ese tipo de pieza.'];
+        }
+
         $ddatosCalculo->tipoPrecio        = $tipoPrecio;
         $ddatosCalculo->ddatcNombre       = $ddatcNombre;
         $ddatosCalculo->ddatcDescripcion     = $ddatcDescripcion;

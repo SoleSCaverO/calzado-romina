@@ -68,7 +68,7 @@
         <div class="x_panel">
             <div class="x_title">
                 <h2>
-                    Listado de datos
+                    Listado de precios
                 </h2>
                 <div class="clearfix"></div>
             </div>
