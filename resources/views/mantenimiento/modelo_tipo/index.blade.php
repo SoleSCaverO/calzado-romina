@@ -66,7 +66,7 @@
                                             data-modelo_nombre="{{ $modelo->modDescripcion }}"
                                             data-subarea_id="{{ $subarea->subaId }}"
                                             data-subarea_nombre="{{ $subarea->subaDescripcion }}"
-                                            data-precio_checked="{{ count($precio_checked)>0?$precio_checked[0]->ddatcDescripcion:'' }}"
+                                            data-precio_checked="{{ count($precio_checked)>0?$precio_checked[0]->ddatcNombre:'' }}"
                                             data-precio_pieza="{{ count($precio_checked)>0?$precio_checked[0]->moddatosPiezas:'' }}"
                                     >
                                         @if( count($precio_checked)>0 )

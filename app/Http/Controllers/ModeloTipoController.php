@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DDatosCalculo;
+use App\Models\Description;
 use App\Models\DetalleModeloDatos;
 use App\Models\DetalleModeloDefecto;
 use App\Models\DSubATipoC;
@@ -18,8 +19,7 @@ class ModeloTipoController extends Controller
 {
     function index( $perfilado = null )
     {
-        $modelos  = Modelo::take(11)->get();
-
+        $modelos = Modelo::take(10)->get();
         $subareas = collect();
         if( $perfilado ){
             $subareas_menores = SubareaMenor::where('subamEstado',1)->get();
@@ -44,10 +44,12 @@ class ModeloTipoController extends Controller
 
         $pivot   = $request->get('pivot');
         $piezas  = $request->get('numero_piezas');
-        
+
         if( !is_null($pivot) ){
             if( strlen($pivot)>0 ){
-                $pieza = Pieza::where('pieInicial','<=',$piezas)->where('pieFinal','>=',$piezas)->first();
+                $description = Description::where('description',$pivot)->first();
+
+                $pieza = Pieza::where('pieInicial','<=',$piezas)->where('pieFinal','>=',$piezas)->where('description_id',$description->id)->first();
                 if( count($pieza) == 0 )
                     return ['success'=>'false','message'=>'El número de piezas no se encuentra en ningún rango.'];
 
@@ -55,10 +57,13 @@ class ModeloTipoController extends Controller
                 join('subaream as sm','s.subaId','=','sm.subaId')->
                 join('nivel as n','sm.subamId','=','n.subamId')->
                 join('ddatoscalculo as d','n.nivId','=','d.nivId')->
-                select('d.ddatcId')->
-                where(['s.subaId'=>$subarea_id,'ddatcDescripcion'=>$pivot,'n.nivFlag'=>0])->get();
+                select('n.description_id','d.ddatcId')->
+                where('n.description_id',$description->id)->
+                where('d.pieId',$pieza->pieId)->
+                where(['s.subaId'=>$subarea_id])->get();
                 foreach ( $ddc_ids_ as $ddc_id ) {
-                    $dmd_ = DetalleModeloDatos::where('ddatcId',$ddc_id->ddatcId)->first();
+                    $dmd_ = DetalleModeloDatos::where('description_id',$ddc_id->description_id)->where('ddatcId',$ddc_id->ddatcId)->where( 'modId',$modId)->first();
+
                     if( count($dmd_)>0 ){
                         $dmd_->pieId = $pieza->pieId;
                         $dmd_->moddatosPiezas = $piezas;
@@ -76,7 +81,7 @@ class ModeloTipoController extends Controller
         join('ddatoscalculo as d','n.nivId','=','d.nivId')->
         join('detalle_modelo_datos as dmd','d.ddatcId','=','dmd.ddatcId')->
         select('dmd.moddatosId')->
-        where(['s.subaId'=>$subarea_id,'dmd.modId'=>$modId,'n.nivFlag'=>0])->get();
+        where(['s.subaId'=>$subarea_id,'dmd.modId'=>$modId])->get();
 
         if( count($dmd_registrados)>0 ){
             foreach ( $dmd_registrados as $dmd_registrado ) {
@@ -90,7 +95,7 @@ class ModeloTipoController extends Controller
         join('nivel as n','sm.subamId','=','n.subamId')->
         join('ddatoscalculo as d','n.nivId','=','d.nivId')->
         select('d.ddatcId')->
-        where(['s.subaId'=>$subarea_id,'ddatcDescripcion'=>$ddatcId,'n.nivFlag'=>0])->get();
+        where(['s.subaId'=>$subarea_id,'ddatcNombre'=>$ddatcId,'n.nivFlag'=>0])->get();
 
         foreach ( $ddc_ids as $dmc_id ) {
             $dmd = DetalleModeloDatos::create([
@@ -99,6 +104,27 @@ class ModeloTipoController extends Controller
                 'moddatosEstado'=>1
             ]);
             $dmd->save();
+        }
+
+        $descriptions = DB::table('subarea')->
+        join('subaream as sm','subarea.subaId','=','sm.subaId')->
+        join('nivel as n','sm.subamId','=','n.subamId')->
+        join('ddatoscalculo as d','n.nivId','=','d.nivId')->
+        join('descriptions','descriptions.id','=','n.description_id')->
+        select('descriptions.id','descriptions.description','d.ddatcId')->
+        distinct('d.ddatcId')->
+        where(['subarea.subaId'=>$subarea_id])->get();
+
+        foreach ( $descriptions as $description ){
+            if( $description->description == $ddatcId ){
+                $dmd = DetalleModeloDatos::create([
+                    'ddatcId'=> $description->ddatcId,
+                    'description_id' => $description->id,
+                    'modId'=>$modId,
+                    'moddatosEstado'=>1
+                ]);
+                $dmd->save();
+            }
         }
 
         return ['success'=>'true','message'=>'Datos guardados correctamente.'];

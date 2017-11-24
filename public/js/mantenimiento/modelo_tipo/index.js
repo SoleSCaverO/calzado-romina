@@ -92,7 +92,7 @@ function modal_precios() {
             $to_append +=
                 '<div class="row">' +
                 '<div class="col-md-1 col-md-offset-1">' +
-                '<input type="radio"  name="ddc_id" value="' + v.ddatcDescripcion + '" class="form-control"' + ($precio_checked == v.ddatcDescripcion ? ' checked' : '') + '>' +
+                '<input type="radio"  name="ddc_id" value="' + v.ddatcNombre + '" class="form-control"' + ($precio_checked == v.ddatcNombre ? ' checked' : '') + '>' +
                 '</div>' +
                 '<div class="col-md-10">' +
                 '<label class="beside_check" style="margin-right: 5px; color:black">' + (v.ddatcNombre?('('+v.ddatcNombre+')'):'(-)')+'</label>'+'<label>'+v.ddatcDescripcion +'</label>' +

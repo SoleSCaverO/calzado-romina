@@ -57,7 +57,7 @@ class SubArea extends Model
         $lista_descripciones = [];
         foreach ( $precios as $precio ){
             array_push($lista_precios,['ddatcDescripcion'=>$precio['ddatcDescripcion'],'ddatcNombre'=>$precio['ddatcNombre']]);
-            array_push($lista_descripciones,$precio['ddatcDescripcion']);
+            array_push($lista_descripciones,$precio['ddatcNombre']);
         }
 
         $mostrar_descripciones = false;
@@ -71,10 +71,19 @@ class SubArea extends Model
         }
 
         if(  $mostrar_descripciones ) {
-            $descriptions = Description::where('state', 1)->get();
-            foreach ($descriptions as $description) {
-                if (!in_array($description['description'], $lista_descripciones))
-                    array_push($lista_precios, ['ddatcDescripcion' => $description['name'], 'ddatcNombre' => 'description']);
+            $descriptions = DB::table('subarea')->
+            join('subaream as sm','subarea.subaId','=','sm.subaId')->
+            join('nivel as n','sm.subamId','=','n.subamId')->
+            join('ddatoscalculo as d','n.nivId','=','d.nivId')->
+            join('descriptions','descriptions.id','=','n.description_id')->
+            select('descriptions.id','descriptions.name','descriptions.description')->
+            distinct('d.ddatcDescripcion')->
+            where(['subarea.subaId'=>$subaId])->get();
+            if( count( $descriptions ) ) {
+                foreach ($descriptions as $description) {
+                    if (!in_array($description->description, $lista_descripciones))
+                        array_push($lista_precios, ['ddatcNombre' => $description->name, 'ddatcDescripcion' => $description->description]);
+                }
             }
         }
 
@@ -91,7 +100,15 @@ class SubArea extends Model
         distinct('d.ddatcDescripcion')->
         where(['subarea.subaId'=>$subaId,'dmd.modId'=>$modId,'n.nivFlag'=>0])->get();
 
-        if( count($precio_checked) == 0 ){
+        $is_checked = false;
+        foreach ( $precio_checked as $item ) {
+            if( !is_null($item->moddatosPiezas) ){
+                $is_checked = true;
+                break;
+            }
+        }
+
+        if( count($precio_checked) == 0 ||  !$is_checked ){
             $mostrar_descripcion_checked = false;
             $subarea = SubArea::find($subaId);
             $subareas_menores = $subarea->subareas_menores;
@@ -110,6 +127,12 @@ class SubArea extends Model
                         'descriptions.description as ddatcNombre',
                         'detalle_modelo_datos.moddatosPiezas'
                     )->get();
+            }
+
+            foreach ( $precio_checked as $item ) {
+                if( !is_null($item->moddatosPiezas) ){
+                    return [$item];
+                }
             }
         }
 
