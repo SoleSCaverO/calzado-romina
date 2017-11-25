@@ -75,13 +75,13 @@ class ModeloTipoController extends Controller
               }
         }
 
-        $dmd_registrados = DB::table('subarea as s')->
-        join('subaream as sm','s.subaId','=','sm.subaId')->
-        join('nivel as n','sm.subamId','=','n.subamId')->
-        join('ddatoscalculo as d','n.nivId','=','d.nivId')->
-        join('detalle_modelo_datos as dmd','d.ddatcId','=','dmd.ddatcId')->
-        select('dmd.moddatosId')->
-        where(['s.subaId'=>$subarea_id,'dmd.modId'=>$modId])->get();
+        $dmd_registrados = DB::table('subaream')->
+        join('nivel','subaream.subamId','=','nivel.subamId')->
+        join('ddatoscalculo','nivel.nivId','=','ddatoscalculo.nivId')->
+        join('detalle_modelo_datos','ddatoscalculo.ddatcId','=','detalle_modelo_datos.ddatcId')->
+        select('detalle_modelo_datos.moddatosId')->
+        whereNull('nivel.description_id')->
+        where(['subaream.subaId'=>$subarea_id,'detalle_modelo_datos.modId'=>$modId])->get();
 
         if( count($dmd_registrados)>0 ){
             foreach ( $dmd_registrados as $dmd_registrado ) {
@@ -90,12 +90,12 @@ class ModeloTipoController extends Controller
             }
         }
 
-        $ddc_ids = DB::table('subarea as s')->
-        join('subaream as sm','s.subaId','=','sm.subaId')->
-        join('nivel as n','sm.subamId','=','n.subamId')->
-        join('ddatoscalculo as d','n.nivId','=','d.nivId')->
-        select('d.ddatcId')->
-        where(['s.subaId'=>$subarea_id,'ddatcNombre'=>$ddatcId,'n.nivFlag'=>0])->get();
+        $ddc_ids = DB::table('subaream')->
+        join('nivel','subaream.subamId','=','nivel.subamId')->
+        join('ddatoscalculo','nivel.nivId','=','ddatoscalculo.nivId')->
+        select('ddatoscalculo.ddatcId')->
+        where(['subaream.subaId'=>$subarea_id,'ddatcNombre'=>$ddatcId,'nivel.nivFlag'=>0])->
+        whereNull('nivel.description_id')->get();
 
         foreach ( $ddc_ids as $dmc_id ) {
             $dmd = DetalleModeloDatos::create([
@@ -106,14 +106,15 @@ class ModeloTipoController extends Controller
             $dmd->save();
         }
 
-        $descriptions = DB::table('subarea')->
-        join('subaream as sm','subarea.subaId','=','sm.subaId')->
-        join('nivel as n','sm.subamId','=','n.subamId')->
-        join('ddatoscalculo as d','n.nivId','=','d.nivId')->
-        join('descriptions','descriptions.id','=','n.description_id')->
-        select('descriptions.id','descriptions.description','d.ddatcId')->
-        distinct('d.ddatcId')->
-        where(['subarea.subaId'=>$subarea_id])->get();
+        $descriptions = DB::table('subaream')->
+        join('nivel','subaream.subamId','=','nivel.subamId')->
+        join('ddatoscalculo','nivel.nivId','=','ddatoscalculo.nivId')->
+        join('descriptions','descriptions.id','=','nivel.description_id')->
+        select('descriptions.id','descriptions.description','ddatoscalculo.ddatcId')->
+        distinct('nivel.ddatcId')->
+        whereNotNull('nivel.description_id')->
+        where('nivel.nivFlag',1)->
+        where('subaream.subaId',$subarea_id)->get();
 
         foreach ( $descriptions as $description ){
             if( $description->description == $ddatcId ){

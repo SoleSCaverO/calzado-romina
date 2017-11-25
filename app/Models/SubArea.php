@@ -78,6 +78,7 @@ class SubArea extends Model
             join('descriptions','descriptions.id','=','n.description_id')->
             select('descriptions.id','descriptions.name','descriptions.description')->
             distinct('d.ddatcDescripcion')->
+            whereNotNull('n.description_id')->
             where(['subarea.subaId'=>$subaId])->get();
             if( count( $descriptions ) ) {
                 foreach ($descriptions as $description) {
@@ -97,7 +98,8 @@ class SubArea extends Model
         join('ddatoscalculo as d','n.nivId','=','d.nivId')->
         join('detalle_modelo_datos as dmd','d.ddatcId','=','dmd.ddatcId')->
         select('d.ddatcDescripcion','d.ddatcNombre','dmd.moddatosPiezas')->
-        distinct('d.ddatcDescripcion')->
+        distinct('d.ddatcNombre')->
+        whereNull('n.description_id')->
         where(['subarea.subaId'=>$subaId,'dmd.modId'=>$modId,'n.nivFlag'=>0])->get();
 
         $is_checked = false;
@@ -107,31 +109,30 @@ class SubArea extends Model
                 break;
             }
         }
-
-        if( count($precio_checked) == 0 ||  !$is_checked ){
-            $mostrar_descripcion_checked = false;
-            $subarea = SubArea::find($subaId);
-            $subareas_menores = $subarea->subareas_menores;
-            foreach ( $subareas_menores as $subareas_menor ){
-                $dsuba_tipocal = DSubATipoC::where('subamId',$subareas_menor->subamId)->first();
-                if( $dsuba_tipocal->tipocalId == 2 ){
-                    $mostrar_descripcion_checked = true;
-                }
+        $mostrar_descripcion_checked = false;
+        $subarea = SubArea::find($subaId);
+        $subareas_menores = $subarea->subareas_menores;
+        foreach ( $subareas_menores as $subareas_menor ){
+            $dsuba_tipocal = DSubATipoC::where('subamId',$subareas_menor->subamId)->first();
+            if( $dsuba_tipocal->tipocalId == 1 ){
+                $mostrar_descripcion_checked = true;
             }
+        }
 
-            if( $mostrar_descripcion_checked ) {
+        if( $mostrar_descripcion_checked ) {
+            if( count($precio_checked) == 0 ||  !$is_checked ) {
                 $precio_checked = DetalleModeloDatos::join('descriptions', 'descriptions.id', '=', 'detalle_modelo_datos.description_id')->
-                    where('modId',$modId)->
-                    select(
-                        'descriptions.name as ddatcDescripcion',
-                        'descriptions.description as ddatcNombre',
-                        'detalle_modelo_datos.moddatosPiezas'
-                    )->get();
-            }
+                where('modId', $modId)->
+                select(
+                    'descriptions.name as ddatcDescripcion',
+                    'descriptions.description as ddatcNombre',
+                    'detalle_modelo_datos.moddatosPiezas'
+                )->get();
 
-            foreach ( $precio_checked as $item ) {
-                if( !is_null($item->moddatosPiezas) ){
-                    return [$item];
+                foreach ($precio_checked as $item) {
+                    if (!is_null($item->moddatosPiezas)) {
+                        return [$item];
+                    }
                 }
             }
         }
