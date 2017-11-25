@@ -94,10 +94,14 @@ class SubareaMenor extends Model
                 if( $precio->ddatcMayorCondicion == 1 ){
                     if( $precio->ddatcDatoCondicion < $pares  ){
                         $monto = $precio->ddatcPrecioCondicion * $pares;
+                    }else{
+                        $monto = ($precio->ddatcPrecioDocena * $pares)/12;
                     }
                 }else{
                     if( $precio->ddatcDatoCondicion > $pares  ){
                         $monto = $precio->ddatcPrecioCondicion * $pares;
+                    }else{
+                        $monto = ($precio->ddatcPrecioDocena * $pares)/12;
                     }
                 }
             }else{
