@@ -170,66 +170,56 @@ Route::group(['prefix'=>'reporte'],function (){
     Route::get('op_chica/{produccion_id}','ProgramacionController@op_chica')->name('reporte.op_chica');
 });
 
-/*
-// Subáreas
-Route::get('subareas/modelo-tipo/perfilado','SubareaController@modeloTipoPerfilado');
-Route::get('subareas/tipo-calculo/{subaId}','SubareaController@subareaTipoCalculo');
+Route::get('precios', function (){
+    $modelos = \App\Models\Modelo::all();
 
-// Trabajadores
-Route::get('trabajadores/{traCodigobarras}','TrabajadorController@codigoBarrasTrabajador');
+    $precios = \App\Models\Subarea::
+    join('subaream as sm','subarea.subaId','=','sm.subaId')->
+    join('nivel as n','sm.subamId','=','n.subamId')->
+    join('ddatoscalculo as d','n.nivId','=','d.nivId')->
+    select('d.ddatcNombre')->
+    distinct('d.ddatcNombre')->
+    where(['n.nivFlag'=>0])->
+    whereNull('n.description_id')->
+    orderBy('d.ddatcNombre')->get();
 
-// DDATOS CALCULO
+    $lista_precios = [];
+    $lista_descripciones = [];
+    foreach ( $precios as $precio ){
+        array_push($lista_precios,$precio['ddatcNombre']);
+        array_push($lista_descripciones,$precio['ddatcNombre']);
+    }
 
+    $descriptions = Illuminate\Support\Facades\DB::table('subarea')->
+    join('subaream as sm','subarea.subaId','=','sm.subaId')->
+    join('nivel as n','sm.subamId','=','n.subamId')->
+    join('ddatoscalculo as d','n.nivId','=','d.nivId')->
+    join('descriptions','descriptions.id','=','n.description_id')->
+    select('descriptions.description')->
+    distinct('descriptions.description')->get();
 
-// Planillas
-Route::get('planillas','PlanillaController@index');
-Route::get('planillas/ultima','PlanillaController@planillaUltima');
-Route::post('planillas/crear','PlanillaController@planillaCrear');
-Route::post('planillas/editar','PlanillaController@planillaEditar');
-Route::get('planillas/subareas/{plaId}','PlanillaController@subareas');
-Route::get('planillas/trabajadores/{plaId}/{subaId}','PlanillaController@trabajadores');
+    if( count( $descriptions ) ) {
+        foreach ($descriptions as $description) {
+            if (!in_array($description->description, $lista_descripciones))
+                array_push($lista_precios, $description->description);
+        }
+    }
 
-// Piezas
-Route::get('piezas/activas','PiezaController@enable');
+    $lista_precios = array_unique($lista_precios);
 
+    return view('pruebas')->with(compact('modelos','lista_precios'));
+})->name('precios');
 
-//===========================//
-//    CRUDs  PRODUCCIÓN      //
-//===========================//
+Route::get('precios/{modelo}/{descripcion}/{pares}', function ( $modelo, $descripcion, $pares ){
+    $subareas_menores = \App\Models\SubareaMenor::
+    join('subarea','subaream.subaId','=','subarea.subaId')->
+    join('area','subarea.areId','=','area.areId')->
+    where('subamEstado',1)->where('subaEstado',1)->where('areEstado',1)->
+    select('subaream.subamId','area.areNombre as area','subarea.subaDescripcion as subarea','subamDescripcion as subarea_menor')->get();
 
-// Producción
-Route::get('produccion-filtro/{cliId}/{ordId}/{pedId}','ProduccionController@produccionListarParametros');
-Route::post('produccion/crear','ProduccionController@produccionCrear');
-// Route::post('produccion/orden/crear','ProduccionController@produccionOrdenCrear');
-Route::post('produccion/orden/quitar','ProduccionController@produccionOrdenQuitar');
-Route::post('produccion/tallas/crear','ProduccionController@produccionTallasCrear');
-Route::post('produccion/materiales/crear','ProduccionController@produccionMaterialesCrear');
-Route::get('produccion/{prodId}','ProduccionController@produccion');
-Route::get('produccion/Listar','ProduccionController@produccionListarTodo');
-Route::get('produccion/tallas/{modId}','ProduccionController@tallasModelo');
-// Producción reportes PDF
-Route::get('produccion/reportes/op_chica/{productionId}','ProduccionController@ordProdChica');
-Route::get('produccion/reportes/op_grande/{productionId}','ProduccionController@ordProdGrande');
+    foreach ( $subareas_menores as $subareas_menor ){
+        $subareas_menor->monto = $subareas_menor->monto($subareas_menor->subamId, $modelo, $descripcion,$pares);
+    }
 
-// INICIO DE TRABAJO
-Route::get('inicio-trabajo/listar/{inicio}/{fin}/{orden}','InicioTrabajoController@inicioTrabajoListar');
-// Route::get('inicio-trabajo/trabajador/areas/{traId}','ProduccionController@trabajadorAreas');-->trabajadores/subarea/{traCodigobarras}
-// Route::get('inicio-trabajo/trabajador/subareas/{traId}/{areId}','ProduccionController@trabajadorSubareas');-->trabajadores/subarea/{traCodigobarras}
-Route::post('inicio-trabajo/crear','InicioTrabajoController@inicioTrabajoCrear');
-Route::post('fin-trabajo/crear','ProduccionController@FinTrabajoCrear');
-Route::get('inicio-trabajo/orden/{ordIdx}','ProduccionController@orden');
-Route::get('inicio-trabajo/cambiar-tipo-trabajo/{traId}/{traSueldo}','ProduccionController@cambiarTipoTrabajo');
-
-// Pedidos
-Route::get('pedidos-listar/{cliId}/{ordIdx?}','PedidoController@index');
-Route::get('pedidos/{pedIdx}','PedidoController@pedido');
-Route::get('pedidos/estados/{pedIdx}','PedidoController@pedidoEstados');
-//colores
-Route::get('colores','ProduccionController@color');
-//generos
-Route::get('generos','ProduccionController@genero');
-Route::get('generos/tallas','ProduccionController@generoTallas');
-//lineas
-Route::get('lineas','ProduccionController@linea');
-
-*/
+    return ['data' =>$subareas_menores];
+})->name('url-to-prices');

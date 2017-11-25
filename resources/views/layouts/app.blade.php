@@ -111,6 +111,12 @@
                                     <li><a href="other_charts.html">Other Charts</a></li>
                                 </ul>
                             </li>
+                            <li>
+                                <a><i class="fa fa-table"></i>PRUEBAS <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{{ route('precios') }}">Precios</a></li>
+                                </ul>
+                            </li>
                         </ul>
                     </div>
                 </div>
