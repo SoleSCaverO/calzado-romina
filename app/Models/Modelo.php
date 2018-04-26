@@ -38,4 +38,34 @@ class Modelo extends Model
         $genero = $multitabla->mulDescripcion;
         return $genero;
     }
+
+    public function tienePrecioReferencial($model,$minor_subarea){
+        $data_model_detail = DetalleModeloDatos::join('ddatoscalculo','ddatoscalculo.ddatcId','=','detalle_modelo_datos.ddatcId')->
+            join('nivel','ddatoscalculo.nivId','=','nivel.nivId')->
+            where('detalle_modelo_datos.modId',$model)->
+            where('nivel.subamId',$minor_subarea)->
+            select('detalle_modelo_datos.*')->first();
+
+        $has_price = true;
+        if( !count($data_model_detail)){
+            $has_price = false;
+            return ['has_price'=>$has_price];
+        }
+
+        $has_referential_price = false;
+        if(!is_null($data_model_detail->referential_price)){
+            $has_referential_price = true;
+        }
+
+        $price = $data_model_detail->precio;
+        $price = 'S/ '.$price->ddatcPrecioDocena.($price->tipoPrecio == 1? ' x PAR' : ' x DOC');
+
+        return [
+            'has_price'=>$has_price,
+            'price'=>$price,
+            'has_referential_price'=>$has_referential_price,
+            'referential_price'=>$data_model_detail->referential_price,
+            'id'=>$data_model_detail->moddatosId
+        ];
+    }
 }

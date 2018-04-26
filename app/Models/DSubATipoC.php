@@ -10,4 +10,9 @@ class DSubATipoC extends Model
     protected $primaryKey = 'dsatipocal';
     protected $fillable = ['dsatipocal','subamId', 'tipocalId'];
     public $timestamps = false;
+
+
+    public function subarea_menor(){
+        return $this->belongsTo(SubareaMenor::class,'subamId','subamId');
+    }
 }

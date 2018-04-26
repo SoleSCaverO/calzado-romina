@@ -82,12 +82,9 @@
                                     <li><a href="{{ route('areas') }}">ÁREA Y SUB AREAS</a></li>
                                     <li><a href="{{ route('areas.subareas.subareas_menores.areas') }}">SUB AREAS MENORES</a></li>
                                     <li><a href="{{ route('trabajadores') }}">TRABAJADORES</a></li>
-                                    <li><a href="{{ route('tipo_calculos') }}">TIPO DE CÁLCULO</a></li>
-                                    <li><a href="{{ route('piezas') }}">DESCRIPCIONES Y TIPOS DE PIEZAS PARA NIVELES</a></li>
                                     <li><a href="{{ route('precio_area') }}">PRECIOS POR AREA</a></li>
                                     <li><a href="{{ route('modelo_tipo') }}">MODELO - DESCRIPCION</a></li>
-                                    <li><a href="{{ route('modelo_tipo','perfilado') }}">PERFILADO</a></li>
-                                    
+                                    <li><a href="{{ route('precio.referencial') }}">PRECIOS REFERENCIALES</a></li>
                                 </ul>
                             </li>
                             <li><a><i class="fa fa-truck"></i>PRODUCCIÓN<span class="fa fa-chevron-down"></span></a>

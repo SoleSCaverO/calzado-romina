@@ -223,3 +223,8 @@ Route::get('precios/{modelo}/{descripcion}/{pares}', function ( $modelo, $descri
 
     return ['data' =>$subareas_menores];
 })->name('url-to-prices');
+
+Route::group(['prefix'=>'precio-referencial'], function (){
+   Route::get('/','ReferentialPriceController@index')->name('precio.referencial');
+   Route::post('/store','ReferentialPriceController@store')->name('precio.referencial.store');
+});

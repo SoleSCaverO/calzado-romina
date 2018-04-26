@@ -17,4 +17,7 @@ class Nivel extends Model
         return $this->hasMany('App\Models\DDatosCalculo','nivId','nivId');
     }
 
+    public function subarea_menor_tipo_calculo(){
+        return $this->belongsTo(DSubATipoC::class,'dsatipocal','dsatipocal');
+    }
 }
