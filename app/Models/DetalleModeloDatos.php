@@ -13,4 +13,7 @@ class DetalleModeloDatos extends Model
     ];
     public $timestamps = false;
 
+    public function precio(){
+        return $this->belongsTo(DDatosCalculo::class,'ddatcId','ddatcId');
+    }
 }

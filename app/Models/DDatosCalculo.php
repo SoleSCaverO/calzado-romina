@@ -28,6 +28,6 @@ class DDatosCalculo extends Model
 
     public function nivel()
     {
-         return $this->belongsTo('App\Models\Nivel','nivId','nivId');
+         return $this->belongsTo(Nivel::class,'nivId','nivId');
     }
 }
