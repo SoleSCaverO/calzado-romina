@@ -85,6 +85,7 @@
                                     <li><a href="{{ route('precio_area') }}">PRECIOS POR AREA</a></li>
                                     <li><a href="{{ route('modelo_tipo') }}">MODELO - DESCRIPCION</a></li>
                                     <li><a href="{{ route('precio.referencial') }}">PRECIOS REFERENCIALES</a></li>
+                                    <li><a href="{{ route('ficha.tecnica') }}">FICHA TECNICA</a></li>
                                 </ul>
                             </li>
                             <li><a><i class="fa fa-truck"></i>PRODUCCIÓN<span class="fa fa-chevron-down"></span></a>

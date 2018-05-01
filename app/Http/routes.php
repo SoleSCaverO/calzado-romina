@@ -228,3 +228,7 @@ Route::group(['prefix'=>'precio-referencial'], function (){
    Route::get('/','ReferentialPriceController@index')->name('precio.referencial');
    Route::post('/store','ReferentialPriceController@store')->name('precio.referencial.store');
 });
+
+Route::group(['prefix'=>'ficha-tecnica'], function(){
+    Route::get('/', 'RecordController@technique')->name('ficha.tecnica');
+});
