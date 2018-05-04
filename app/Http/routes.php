@@ -230,5 +230,8 @@ Route::group(['prefix'=>'precio-referencial'], function (){
 });
 
 Route::group(['prefix'=>'ficha-tecnica'], function(){
-    Route::get('/', 'RecordController@technique')->name('ficha.tecnica');
+    Route::get('/', 'RecordController@index')->name('ficha.tecnica');
+    Route::get('/create', 'RecordController@create')->name('ficha.tecnica.create');
+    Route::post('/store', 'RecordController@store')->name('ficha.tecnica.store');
+    Route::get('/show', 'RecordController@show')->name('ficha.tecnica.show');
 });

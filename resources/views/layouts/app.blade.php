@@ -85,7 +85,6 @@
                                     <li><a href="{{ route('precio_area') }}">PRECIOS POR AREA</a></li>
                                     <li><a href="{{ route('modelo_tipo') }}">MODELO - DESCRIPCION</a></li>
                                     <li><a href="{{ route('precio.referencial') }}">PRECIOS REFERENCIALES</a></li>
-                                    <li><a href="{{ route('ficha.tecnica') }}">FICHA TECNICA</a></li>
                                 </ul>
                             </li>
                             <li><a><i class="fa fa-truck"></i>PRODUCCIÓN<span class="fa fa-chevron-down"></span></a>
@@ -98,6 +97,11 @@
                             <li><a><i class="fa fa-table"></i>PLANILLA <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
                                     <li><a href="{{ route('planillas') }}">Inicio - Término</a></li>
+                                </ul>
+                            </li>
+                            <li><a><i class="fa fa-table"></i>FICHA TECNICA <span class="fa fa-chevron-down"></span></a>
+                                <ul class="nav child_menu">
+                                    <li><a href="{{ route('ficha.tecnica') }}">DESEÑO</a></li>
                                 </ul>
                             </li>
                             <li><a><i class="fa fa-bar-chart-o"></i>REPORTES<span class="fa fa-chevron-down"></span></a>
@@ -288,6 +292,7 @@
 <script src="{{ asset('datatable/js/jquery.dataTables.bootstrap.min.js') }}"></script>
 
 <script src="{{ asset('validate/jquery.validate.min.js') }}"></script>
+<script src="{{ asset('validate/localization/messages_es_PE.js') }}"></script>
 
 <!-- Custom functions -->
 <script src="{{ asset('js/global/functions.js') }}"></script>

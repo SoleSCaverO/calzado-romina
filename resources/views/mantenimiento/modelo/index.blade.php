@@ -111,7 +111,7 @@
                 <div class="modal-body">
                     {{ csrf_field() }}
                     <input type="hidden" name="modelo_id">
-                    <input class="form-control" type="file" name="modelo_imagen" id="modelo-imagen" data-rule-extension="png|jpg" required>
+                    <input class="form-control" type="file" name="modelo_imagen" id="modelo-imagen" accept="image/*" required>
                     <img class="img-responsive" id="modelo-imagen-preview" alt=""  />
                     <br>
                     <div class="row">
