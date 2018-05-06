@@ -107,7 +107,7 @@ class RecordController extends Controller
             }else if(@$data['latex']){
                 $lastMaterial = 'LATEX';
             }else if(@$data['retacon']){
-                $lastMaterial = 'retacon';
+                $lastMaterial = 'RETACON';
             }else{
                 $lastMaterial = 'NINGUNO';
             }
@@ -145,9 +145,139 @@ class RecordController extends Controller
         }
     }
 
-    public function show($id)
+    public function show($id,$pdf=null)
     {
-        //
+        $ficha = Ficha::find($id);
+        /* CUERO - FORRO - PLANTILLA */
+        $FORRO_DEFAULT = 3;
+        $PLANTILLA_DEFAULT = 2;
+        $nroMatCuero = $ficha->numeroMateriales($ficha->id,1);
+        $nroMatForro = $ficha->numeroMateriales($ficha->id,2);
+        $nroMatPlantilla = $ficha->numeroMateriales($ficha->id,3);
+        $nroMatCueroFaltante = 0;
+        $nroMatForroFaltante = 0;
+        $nroMatPlantillaFaltante = 0;
+
+        if($nroMatForro < $FORRO_DEFAULT ){
+            $nroMatForroFaltante = $FORRO_DEFAULT - $nroMatForro;
+            $nroMatForro = $FORRO_DEFAULT;
+        }
+
+        if($nroMatPlantilla< $PLANTILLA_DEFAULT ){
+            $nroMatPlantillaFaltante = $PLANTILLA_DEFAULT - $nroMatPlantilla;
+            $nroMatPlantilla = $PLANTILLA_DEFAULT;
+        }
+        $diffCuero = 0; // PAra ancho de imágenes grandes
+        $extraNroPlantilla = 0; // Columnas extras en Plantilla
+        if( $nroMatCuero >= $nroMatForro + $nroMatPlantilla ){
+            $diferencia = $nroMatCuero - ($nroMatForro + $nroMatPlantilla);
+            $nroMatPlantilla += $diferencia;
+            $diffCuero = $diferencia;
+        }else{
+            $diferencia  = $nroMatForro + $nroMatPlantilla - $nroMatCuero;
+            $nroMatCueroFaltante = $diferencia;
+            $nroMatCuero += $diferencia;
+            $diffCuero = $diferencia;
+        }
+
+        if( $nroMatPlantilla > $ficha->numeroMateriales($ficha->id,3)){
+            $extraNroPlantilla = $nroMatPlantilla - $ficha->numeroMateriales($ficha->id,3) - $nroMatPlantillaFaltante;
+        }
+        //dd($extraNroPlantilla,$nroMatPlantilla, $ficha->numeroMateriales($ficha->id,3));
+        $range = range('A','Z');
+        /* CUERO - FORRO - PLANTILLA */
+
+        /* PERFILADO - COSIDO VENA - PEGADO */
+        $COSIDO_DEFAULT = 2;
+        $PEGADO_DEFAULT = 2;
+        $nroMatPerfilado = $ficha->numeroMateriales($ficha->id,4);
+        $nroMatCosido = $ficha->numeroMateriales($ficha->id,5);
+        $nroMatPegado = $ficha->numeroMateriales($ficha->id,6);
+
+        if( $nroMatCosido < $COSIDO_DEFAULT ){
+            $nroMatCosido = $COSIDO_DEFAULT;
+        }
+
+        if( $nroMatPegado < $PEGADO_DEFAULT ){
+            $nroMatPegado = $PEGADO_DEFAULT;
+        }
+
+        $nroMatPerfilado = intval(ceil($nroMatPerfilado/2));
+        if( $nroMatPerfilado > ($nroMatCosido + $nroMatPegado + 1) ){
+            $diferencia = $nroMatPerfilado - ($nroMatCosido + $nroMatPegado + 1);
+            $nroMatPegado += $diferencia;
+        }else{
+            $diferencia = ($nroMatCosido + $nroMatPegado + 1) - $nroMatPerfilado;
+            $nroMatPerfilado += $diferencia;
+        }
+
+        $perfilado = $ficha->material($ficha->id,4);
+        $cosido  = $ficha->material($ficha->id,5);
+        $pegado  = $ficha->material($ficha->id,6);
+
+        $columna1 = [];$columna2 = [];$columna3 = [];
+        $perfilado = $perfilado->toArray();
+        if( count($perfilado) >= $nroMatPerfilado ){
+            for( $i=0;$i<$nroMatPerfilado;$i++ ){
+                array_push($columna1,$perfilado[$i]['nombre']);
+            }
+
+            for( $i=$nroMatPerfilado;$i<2*$nroMatPerfilado;$i++ ){
+                array_push($columna2,@$perfilado[$i]?$perfilado[$i]['nombre']:'');
+            }
+        }else{
+            for( $i=0;$i<$nroMatPerfilado;$i++ ){
+                array_push($columna1, @$perfilado[$i] ? $perfilado[$i]['nombre'] : '');
+            }
+            for( $i=0;$i<$nroMatPerfilado;$i++ ){
+                array_push($columna2,'');
+            }
+        }
+
+        foreach ( $cosido as $item ){
+            array_push($columna3,$item->nombre);
+        }
+
+        if( count($cosido) < $COSIDO_DEFAULT ){
+            array_push($columna3,'');
+        }
+        array_push($columna3,'PEGADO');
+        foreach ( $pegado as $item ){
+            array_push($columna3,$item->nombre);
+        }
+
+        if( count($pegado) < $PEGADO_DEFAULT ){
+            array_push($columna3,'');
+        }
+        /* PERFILADO - COSIDO VENA - PEGADO */
+
+        /* ARMADO - HAB. PLANTILLA - ENCAJADO */
+        $armado = $ficha->material($ficha->id,7);
+        $encajado = $ficha->material($ficha->id,8);
+        $habPlantilla = $ficha->material($ficha->id,9);
+        /* ARMADO - HAB. PLANTILLA - ENCAJADO */
+
+        if( $pdf == 'pdf'  ){
+            $view = view('fichas.disenio.pdf')->with(compact(
+                'ficha', 'nroMatCuero', 'nroMatForro', 'nroMatPlantilla',
+                'nroMatCueroFaltante', 'nroMatForroFaltante', 'nroMatPlantillaFaltante', 'range',
+                'nroMatPerfilado', 'nroMatCosido', 'columna1', 'columna2', 'columna3',
+                'armado', 'encajado', 'habPlantilla',
+                'diffCuero', 'extraNroPlantilla'
+            ));
+
+            $pdf = app('dompdf.wrapper');
+
+            $pdf->loadHTML($view);
+            return $pdf->stream();
+        }
+        return view('fichas.disenio.show')->with(compact(
+            'ficha', 'nroMatCuero', 'nroMatForro', 'nroMatPlantilla',
+            'nroMatCueroFaltante', 'nroMatForroFaltante', 'nroMatPlantillaFaltante', 'range',
+            'nroMatPerfilado', 'nroMatCosido', 'columna1', 'columna2', 'columna3',
+            'armado', 'encajado', 'habPlantilla',
+            'diffCuero', 'extraNroPlantilla'
+        ));
     }
 
     public function edit($id)

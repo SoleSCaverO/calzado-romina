@@ -23,8 +23,8 @@
                 @foreach( $fichas as $ficha)
                     <tr>
                         <td>{{ $ficha->id }}</td>
-                        <td>{{ $ficha->cliente->cliNombre }}</td>
-                        <td>{{ $ficha->modelo->modDescripcion }}</td>
+                        <td>{{ $ficha->nombre_cliente }}</td>
+                        <td>{{ $ficha->nombre_modelo }}</td>
                         <td>{{ $ficha->color }}</td>
                         <td>
                             <a href="{{ route('ficha.tecnica.show',$ficha->id ) }}" class="btn btn-info btn-sm"><i class="fa fa-eye"></i> Ver</a>

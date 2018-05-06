@@ -233,5 +233,5 @@ Route::group(['prefix'=>'ficha-tecnica'], function(){
     Route::get('/', 'RecordController@index')->name('ficha.tecnica');
     Route::get('/create', 'RecordController@create')->name('ficha.tecnica.create');
     Route::post('/store', 'RecordController@store')->name('ficha.tecnica.store');
-    Route::get('/show', 'RecordController@show')->name('ficha.tecnica.show');
+    Route::get('/show/{id}', 'RecordController@show')->name('ficha.tecnica.show');
 });
