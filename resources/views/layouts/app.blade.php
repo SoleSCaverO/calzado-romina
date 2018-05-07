@@ -105,7 +105,8 @@
                             </li>
                             <li><a><i class="fa fa-table"></i>FICHA TECNICA <span class="fa fa-chevron-down"></span></a>
                                 <ul class="nav child_menu">
-                                    <li><a href="{{ route('ficha.tecnica') }}">DESEÑO</a></li>
+                                    <li><a href="{{ route('ficha.tecnica') }}">DISEÑO</a></li>
+                                    <li><a href="{{ route('ficha.ventas') }}">VENTAS</a></li>
                                 </ul>
                             </li>
                             <li><a><i class="fa fa-bar-chart-o"></i>REPORTES<span class="fa fa-chevron-down"></span></a>

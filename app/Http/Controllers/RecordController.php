@@ -280,6 +280,23 @@ class RecordController extends Controller
         ));
     }
 
+    public function indexSales()
+    {
+        $fichas = Ficha::all();
+        return view('fichas.ventas.index')->with(compact('fichas'));
+    }
+
+    public function createSales()
+    {
+        $models = Modelo::take(10)->get();
+        $customers = Cliente::take(10)->get();
+        $colors  = Multitabla::where('mulDepId',2)->get();
+        $areas = FichaArea::all();
+
+        return view('fichas.disenio.create')
+            ->with(compact('models','customers','colors','areas'));
+    }
+
     public function edit($id)
     {
         //
