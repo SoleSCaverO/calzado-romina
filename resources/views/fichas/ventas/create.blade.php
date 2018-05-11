@@ -28,7 +28,7 @@
 @endsection
 
 @section('content')
-    <form id="form_materials" action="{{ route('ficha.venntas.store') }}" method="post">
+    <form id="form_materials" action="{{ route('ficha.ventas.store') }}" method="post">
         <input type="hidden" id="_token" value="{{ csrf_token() }}">
         <div class="row">
             <div class="col-md-12">
@@ -75,61 +75,398 @@
         </div><br>
         <div class="row">
             <div class="col-md-12">
-                <div class="x_panel">
-                    <div class="x_title">
-                        <h2>Información básica</h2>
-                        <ul class="nav navbar-right panel_toolbox">
-                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                            </li>
-                        </ul>
-                        <div class="clearfix"></div>
-                    </div>
-                    <div class="x_content">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="coleccion">Colección</label>
-                                    <input type="text" class="form-control" name="coleccion" id="coleccion">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>PLANTILLA</h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        <label for="plantilla">MATERIAL</label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="piezas">CHECK</label>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="genero">Genero</label>
-                                    <input type="text" class="form-control" name="genero" id="genero">
-                                </div>
-                                <div class="form-group">
-                                    <label for="marca">Marca</label>
-                                    <input type="text" class="form-control" name="marca" id="marca">
-                                </div>
-                                <div class="form-group">
-                                    <label for="horma">Horma</label>
-                                    <input type="text" class="form-control" name="horma" id="horma">
-                                </div>
-                                <div class="form-group">
-                                    <label for="modelista">Modelista</label>
-                                    <input type="text" class="form-control" name="modelista" id="modelista">
+                                <div class="row" data-plantilla="" data-type_material="" data-area="">
+                                    <div class="material">
+                                        <div class="form-group col-md-7">
+                                            <input type="text" class="form-control " id="material">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <input type="checkbox" class="form-control checkboxes" id="piezas">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-success" data-add_plantilla>+</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="talla">Talla</label>
-                                    <input type="text" class="form-control" name="talla" id="talla">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>ENCAJADO</h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        <label for="encajado">TIPO</label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="piezas">CHECK</label>
+                                    </div>
                                 </div>
-                                <div class="form-group">
-                                    <label for="cuero">N° piezas de cuero</label>
-                                    <input type="text" class="form-control" name="cuero" id="cuero">
-                                </div>
-                                <div class="form-group">
-                                    <label for="forro">N° piezas de forro</label>
-                                    <input type="text" class="form-control" name="forro" id="forro">
-                                </div>
-                                <div class="form-group">
-                                    <label for="fecha">Fecha</label>
-                                    <input type="date" class="form-control" name="fecha" id="fecha">
+                                <div class="row" data-encajado="" data-type_material="" data-area="">
+                                    <div class="material">
+                                        <div class="form-group col-md-7">
+                                            <input type="text" class="form-control " id="material">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <input type="checkbox" class="form-control checkboxes" id="piezas">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-success" data-add_encajado>+</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
+                    <div class="col-md-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>CUERO</h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label for="plantilla">MATERIAL</label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="piezas">TIPO</label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="plantilla">COLOR</label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="piezas">COD. CUERO</label>
+                                    </div>
+                                </div>
+                                <div class="row" data-cuero="" data-type_material="" data-area="">
+                                    <div class="material">
+                                        <div class="form-group col-md-3">
+                                            <input type="text" class="form-control " id="material">
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            <input type="text" class="form-control " id="material">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <input type="text" class="form-control " id="material">
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            <input type="text" class="form-control " id="material">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-success" data-add_cuero>+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>FORRO</h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        <label for="encajado">TIPO</label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="piezas">CHECK</label>
+                                    </div>
+                                </div>
+                                <div class="row" data-forro="" data-type_material="" data-area="">
+                                    <div class="material">
+                                        <div class="form-group col-md-7">
+                                            <input type="text" class="form-control " id="material">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <input type="checkbox" class="form-control checkboxes" id="piezas">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-success" data-add_forro>+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>PLANTILLA</h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <div class="row">
+                                    <div class="col-md-7">
+                                        <label for="encajado">TIPO</label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="piezas">CHECK</label>
+                                    </div>
+                                </div>
+                                <div class="row" data-forro="" data-type_material="" data-area="">
+                                    <div class="material">
+                                        <div class="form-group col-md-7">
+                                            <input type="text" class="form-control " id="material">
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <input type="checkbox" class="form-control checkboxes" id="piezas">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <button type="button" class="btn btn-success" data-add_plantilla2>+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>PEGADO</h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <div class="row">
+                                    <div class="col-md-offset-4 col-md-4">
+                                        <label for="plantilla">PLANTA</label>
+                                    </div>
+                                </div>
+                                <div class="row" data-cuero="" data-type_material="" data-area="">
+                                    <div class="material">
+                                        <div class="form-group">
+                                            <label for="plantilla">COD. COLOR</label>
+                                            <input type="text" class="form-control " id="material">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>COSIDO LATERAL</h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+
+                                <div class="row" data-cuero="" data-type_material="" data-area="">
+                                    <div class="material">
+                                        <div class="form-group col-md-12">
+                                            <label for="plantilla">COD. COLOR</label>
+
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control " id="material">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="checkbox" class="form-control checkboxes" id="piezas">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>COSIDO VENA</h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+
+                                <div class="row" data-cuero="" data-type_material="" data-area="">
+                                    <div class="material">
+                                        <div class="form-group col-md-12">
+                                            <label for="plantilla">COD. COLOR</label>
+                                        </div>
+                                        <div class="col-md-10">
+                                            <input type="text" class="form-control " id="material">
+                                        </div>
+                                        <div class="col-md-2">
+                                            <input type="checkbox" class="form-control checkboxes" id="piezas">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>PERFILADO</h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="x_panel">
+                                            <div class="x_title">
+                                                <h2>HILOS</h2>
+                                                <ul class="nav navbar-right panel_toolbox">
+                                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                                    </li>
+                                                </ul>
+                                                <div class="clearfix"></div>
+                                            </div>
+                                            <div class="x_content">
+                                                <div class="row">
+                                                    <div class="col-md-5">
+                                                        <label for="encajado">HILO</label>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <label for="piezas">COD. COLOR</label>
+                                                    </div>
+                                                </div>
+                                                <div class="row" data-forro="" data-type_material="" data-area="">
+                                                    <div class="material">
+                                                        <div class="form-group col-md-5">
+                                                            <input type="text" class="form-control " id="material">
+                                                        </div>
+                                                        <div class="form-group col-md-5">
+                                                            <input type="text" class="form-control " id="material">
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <button type="button" class="btn btn-success" data-add_perfilhilo>+</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="x_panel">
+                                            <div class="x_title">
+                                                <h2>ACCESORIOS</h2>
+                                                <ul class="nav navbar-right panel_toolbox">
+                                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                                    </li>
+                                                </ul>
+                                                <div class="clearfix"></div>
+                                            </div>
+                                            <div class="x_content">
+
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <label for="encajado">ACCESORIO</label>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <label for="piezas">COD. COLOR</label>
+                                                    </div>
+                                                </div>
+                                                <div class="row" data-forro="" data-type_material="" data-area="">
+                                                    <div class="material">
+                                                        <div class="form-group col-md-5">
+                                                            <input type="text" class="form-control " id="material">
+                                                        </div>
+                                                        <div class="form-group col-md-5">
+                                                            <input type="text" class="form-control " id="material">
+                                                        </div>
+                                                        <div class="col-md-2">
+                                                            <button type="button" class="btn btn-success" data-add_perfilaccesorio>+</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h2>OBSERVACIONES</h2>
+                                <ul class="nav navbar-right panel_toolbox">
+                                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                                    </li>
+                                </ul>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+
+                                <div class="row" data-cuero="" data-type_material="" data-area="">
+                                    <textarea name="" id=""rows="10" class="form-control "></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                {{--<div class="row">
                     @foreach($areas as $area)
                         @if( $area->tipo == 1)
                             <div class="col-md-6">
@@ -412,7 +749,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>--}}
                 <div class="row text-center button-save">
                     <button type="submit" class="btn btn-primary" id="btn_save"><i class="fa fa-diamond"></i> Guardar Datos</button>
                 </div>
@@ -424,5 +761,5 @@
 
 @section('scripts')
     <script src="{{ asset('bootstrap-select/js/bootstrap-select.min.js') }}" ></script>
-    <script src="{{ asset('js/mantenimiento/ficha/disenio/index.js?v=1') }}"></script>
+    <script src="{{ asset('js/mantenimiento/ficha/ventas/index.js?v=1') }}"></script>
 @endsection

@@ -293,7 +293,7 @@ class RecordController extends Controller
         $colors  = Multitabla::where('mulDepId',2)->get();
         $areas = FichaArea::all();
 
-        return view('fichas.disenio.create')
+        return view('fichas.ventas.create')
             ->with(compact('models','customers','colors','areas'));
     }
 

@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title','Ficha Técnica de Diseño')
+@section('title','Ficha Técnica de Ventas')
 
 @section('content')
     <div class="row">
