@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -45,6 +46,12 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
+        if  (!Auth::check()) {
+            if ($e instanceof \Illuminate\Session\TokenMismatchException) {
+                return redirect()->back();
+            }
+        }
+
         return parent::render($request, $e);
     }
 }

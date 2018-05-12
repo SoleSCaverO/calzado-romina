@@ -123,7 +123,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="fecha">Fecha</label>
-                                    <input type="date" class="form-control" name="fecha" id="fecha">
+                                    <input type="date" class="form-control" name="fecha" id="fecha" value="{{ $today }}">
                                 </div>
                             </div>
                         </div>
@@ -374,7 +374,7 @@
                                 <div class="row">
                                     <div class="form-group">
                                         <div class="col-md-8">
-                                            <label for="imagen1">Seleccionar la imagen</label>
+                                            <label for="imagen1">Seleccionar imagen externa</label>
                                             <input type="file" name="imagen1" id="imagen1" accept="image/*">
                                         </div>
                                         <div class="col-md-4">
@@ -383,7 +383,7 @@
                                     </div>
                                     <div class="form-group">
                                         <div class="col-md-8">
-                                            <label for="imagen2">Seleccione imagen</label>
+                                            <label for="imagen2">Seleccione imagen interna</label>
                                             <input type="file" name="imagen2" id="imagen2" accept="image/*">
                                         </div>
                                         <div class="col-md-4">
@@ -392,7 +392,7 @@
                                     </div>
                                     <div class="form-group">
                                         <div class="col-md-8">
-                                            <label for="imagen3">Seleccione imagen</label>
+                                            <label for="imagen3">Seleccione imagen superior</label>
                                             <input type="file" name="imagen3" id="imagen3" accept="image/*">
                                         </div>
                                         <div class="col-md-4">
@@ -401,7 +401,7 @@
                                     </div>
                                     <div class="form-group">
                                         <div class="col-md-8">
-                                            <label for="imagen4">Seleccione imagen</label>
+                                            <label for="imagen4">Seleccione imagen posterior</label>
                                             <input type="file" name="imagen4" id="imagen4" accept="image/*">
                                         </div>
                                         <div class="col-md-4">

@@ -3444,11 +3444,26 @@ a.hiddenanchor {
 
 
 /********** sign in ***************************/
-
+.login{
+  color: #73879C;
+  background: #F7F7F7;
+  font-family: "Helvetica Neue",Roboto,Arial,"Droid Sans",sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.471;
+}
 .login_box {
   padding: 20px;
   margin: auto;
 }
+
+.login_wrapper {
+  right: 0;
+  margin: 10% auto 0;
+  max-width: 500px;
+  position: relative;
+}
+
 .left {
   float: left;
 }

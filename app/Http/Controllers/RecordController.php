@@ -8,6 +8,7 @@ use App\Models\FichaArea;
 use App\Models\FichaMateriales;
 use App\Models\Modelo;
 use App\Models\Multitabla;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -28,9 +29,12 @@ class RecordController extends Controller
         $customers = Cliente::take(10)->get();
         $colors  = Multitabla::where('mulDepId',2)->get();
         $areas = FichaArea::all();
+        $today = new Carbon();
+        $today->tz = 'America/Lima';
+        $today = $today->format('Y-m-d');
 
         return view('fichas.disenio.create')
-            ->with(compact('models','customers','colors','areas'));
+            ->with(compact('models','customers','colors','areas','today'));
     }
 
     public function store(Request $request)
