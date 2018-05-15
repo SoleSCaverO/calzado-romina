@@ -152,10 +152,10 @@
                     </tr>
                     <tr>
                         @foreach( $ficha->material($ficha->id,1) as $key => $material )
-                            <td class="pieza">{{ $material->piezas }}</td>
+                            <td class="pieza"><b>PZAS: </b>{{ $material->piezas }}</td>
                         @endforeach
                         @for( $i = 0; $i<$nroMatCueroFaltante;$i++ )
-                            <td class="pieza"></td>
+                            <td></td>
                         @endfor
                         <td class="general">HORMA</td>
                         <td>{{ $ficha->horma }}</td>
@@ -217,17 +217,17 @@
                     </tr>
                     <tr>
                         @foreach( $ficha->material($ficha->id,2) as $key => $material )
-                            <td class="pieza">{{ $material->piezas }}</td>
+                            <td class="pieza"><b>PZAS: </b>{{ $material->piezas }}</td>
                         @endforeach
                         @for( $i = 0; $i<$nroMatForroFaltante;$i++ )
-                            <td class="pieza"></td>
+                            <td></td>
                         @endfor
 
                         @foreach( $ficha->material($ficha->id,3) as $key => $material )
-                            <td class="pieza">{{ $material->piezas }}</td>
+                            <td class="pieza"><b>PZAS: </b>{{ $material->piezas }}</td>
                         @endforeach
                         @for( $i = 0; $i<$nroMatPlantillaFaltante;$i++ )
-                            <td class="pieza"></td>
+                            <td></td>
                         @endfor
                         @for( $i = 0; $i<$extraNroPlantilla;$i++ )
                             <td class="material"></td>

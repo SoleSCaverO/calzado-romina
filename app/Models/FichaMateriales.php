@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class FichaMateriales extends Model
 {
-    protected $fillable = ['ficha_id','area_id','nombre','piezas'];
+    protected $fillable = ['ficha_id','area_id','columna','nombre','color','cantidad','piezas'];
 }

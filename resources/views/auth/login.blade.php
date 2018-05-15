@@ -13,6 +13,7 @@
     <link href="{{ asset('gentelella/vendors/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet">
     <!-- Custom Theme Style -->
     <link href="{{ asset('gentelella/css/custom.css') }}" rel="stylesheet">
+    <link rel="shortcut icon" href="{{asset('gentelella/production/images/Logo_Romina.png')}}" />
 </head>
 
 <body class="login">

@@ -40,25 +40,26 @@ class RecordController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
+        dd($data);
         DB::beginTransaction();
         try{
             $ficha = new Ficha();
-            $ficha->coleccion = $data['coleccion'];
+            $ficha->coleccion = @$data['coleccion'];
             $ficha->genero = $data['genero'];
             $ficha->marca = $data['marca'];
-            $ficha->horma = $data['horma'];
+            $ficha->horma = @$data['horma'];
             $ficha->color = $data['color_id'];
             $ficha->modelista = $data['modelista'];
             $ficha->fecha = $data['fecha'];
             $ficha->cliente_id = $data['cliente_id'];
             $ficha->modelo_id  = $data['modelo_id'];
             $ficha->talla = $data['talla'];
-            $ficha->piezas_cuero = $data['cuero'];
-            $ficha->piezas_forro = $data['forro'];
+            $ficha->piezas_cuero =  @$data['cuero'];
+            $ficha->piezas_forro = @$data['forro'];
             $ficha->modelaje = $data['modelaje'];
-            $ficha->produccion = $data['produccion'];
-            $ficha->gerencia = $data['gerencia'];
-            $ficha->observacion = $data['observacion'];
+            $ficha->produccion = @$data['produccion'];
+            $ficha->gerencia = @$data['gerencia'];
+            $ficha->observacion = @$data['observacion'];
 
             $imagen1 = $request->file('imagen1');
             $imagen2 = $request->file('imagen2');

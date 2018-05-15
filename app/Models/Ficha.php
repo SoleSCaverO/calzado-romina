@@ -10,7 +10,8 @@ class Ficha extends Model
     protected $fillable = [
         'coleccion','genero','marca','horma','color','modelista','fecha','cliente_id','modelo_id',
         'talla','piezas_cuero','piezas_forro','modelaje','produccion','gerencia','observacion',
-        'imagen_derecha','imagen_izquierda','imagen_arriba','imagen_atras'
+        'imagen_derecha','imagen_izquierda','imagen_arriba','imagen_atras',
+        'fecha_modelaje','fecha_produccion','fecha_gerencia'
     ];
 
     protected $appends = ['nombre_cliente','nombre_modelo'];
