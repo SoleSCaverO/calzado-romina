@@ -356,6 +356,7 @@ function save_materials(event) {
             return false;
         }
 
+        var areas = [];
         $dataMaterial.each(function (k,v) {
             var areaId = $(v).attr('data-material');
             var tipoMaterial = $(v).attr('data-type_material');
@@ -372,6 +373,7 @@ function save_materials(event) {
                         pieza = $($(value).children()[2]).children().val().trim();
                     }else {
                        pieza = color;
+                       color = null;
                     }
 
                     material.material = materialName;
@@ -381,38 +383,53 @@ function save_materials(event) {
                     materials.push(material);
                 });
             }else {
+                $default_aguja_hilo_forro = 0;
                 $(v).children().each(function (key, value) { // materials
                     var material = {};
                     if (areaId === '4') {
                         materialName = $(value).children().children().val();
                         button = $($(value).children()[1]).children().prop('tagName');
                         if (button === 'BUTTON') {
+                            if( !$default_aguja_hilo_forro ){
+                                aguja = $('#aguja').val();
+                                hilo_forro = $('#hilo_forro').val();
+                                valores = [aguja,hilo_forro];
+
+                                for (var i=0;i<2;i++ ){
+                                    material_dos = {};
+                                    material_dos.material = valores[i];
+                                    material_dos.extra_perfilado = 1;
+                                    materials.push(material_dos);
+                                }
+                                $default_aguja_hilo_forro = 1;
+                            }
                             material.material = materialName;
                             material.extra_perfilado = 1;
                         }else{
-                            color = $($(value).children()[1]).children();
-                            cantidad = $($(value).children()[2]).children();
+                            color = $($(value).children()[1]).children().val();
+                            cantidad = $($(value).children()[2]).children().val();
                             material.material = materialName;
                             material.color = color;
-                            material.cantidad = pieza;
+                            material.cantidad = cantidad;
                         }
 
                         materials.push(material);
                     } else if (areaId === '5') {
                         if (key === 0) {
-                            tipo_cosido = $($(value).children()[1]).children().val();
-                            if (tipo_cosido.trim().length === 0) {
-                                error = true;
-                                showmessage('El campo TIPO DE COSIDO es requerido para el área ' + area, 0);
-                                return false;
+                            color = $(value).children().children().val();
+                            tipo = $($(value).children()[1]).children().val();
+
+                            valores = [color,tipo];
+
+                            for (var j=0;j<2;j++ ){
+                                material = {};
+                                material.material = valores[j];
+                                materials.push(material);
                             }
                         } else {
-                            tipo_cosido = $(value).children().children().val();
-                            if (tipo_cosido.trim().length === 0) {
-                                error = true;
-                                showmessage('El campo VALOR DE COSIDO VENA es requerido para el área ' + area + ' en la fila ' + (counter - 1), 0);
-                                return false;
-                            }
+                            materialName = $(value).children().children().val();
+                            material.material = materialName;
+                            materials.push(material);
                         }
                     } else if (areaId === '6') {
                         pivot = $($(value).children()[0]).children().val();
@@ -425,63 +442,34 @@ function save_materials(event) {
                             tipo = pivot;
                         }
 
-                        if (key === 0) {
-                            texto = 'PLANTA';
-                        } else if (key === 1) {
-                            texto = 'HILO LATERAL';
-                        }
-                        if (key === 0 || key === 1) {
-                            if (tipo.trim().length === 0) {
-                                error = true;
-                                showmessage('El campo TIPO ' + texto + ' es requerido para el área ' + area, 0);
-                                return false;
-                            }
-
-                            if (color.trim().length === 0) {
-                                error = true;
-                                showmessage('El campo COLOR ' + texto + ' es requerido para el área ' + area, 0);
-                                return false;
-                            }
-                        } else {
-                            if (tipo.trim().length === 0) {
-                                error = true;
-                                showmessage('El campo TIPO es requerido para el área ' + area + ' en la fila ' + (counter - 2), 0);
-                                return false;
-                            }
-
-                            if (color.trim().length === 0) {
-                                error = true;
-                                showmessage('El campo COLOR es requerido para el área ' + area + ' en la fila ' + (counter - 2), 0);
-                                return false;
-                            }
-                        }
-
+                        material.material = tipo;
+                        material.color = color;
+                        materials.push(material);
                     }
                 });
             }
+
+            area.id = areaId;
+            area.materials = materials;
+            areas.push(area)
         });
 
-        counter = 0 ;
-        error = false;
+        var checkboxes = [];
         $('#otros').children().each(function (k,v) {
-            counter++;
+            var checkbox = {};
             input = $(v).children().children().val();
-            if( input.trim().length === 0 ){
-                error = true;
-                showmessage('El campo  para el CHECKBOX es requerido para el área HAB. PLANTILLA en el elemento  '+counter,0);
-                return false;
-            }
+            check = $($(v).children()[1]).children().is(':checked')?1:0;
+            checkbox.nombre = input;
+            checkbox.checked = check;
+
+            checkboxes.push(checkbox);
         });
 
-        if( error ){
-            return false;
-        }
-
-        var areas = [];
         var data = new FormData($form[0]);
         var url  = $form.attr('action');
         var type = $form.attr('method');
         data.append('areas',JSON.stringify(areas));
+        data.append('checkboxes',JSON.stringify(checkboxes));
         $('#btn_save').prop('disabled',true);
 
         $.ajax({

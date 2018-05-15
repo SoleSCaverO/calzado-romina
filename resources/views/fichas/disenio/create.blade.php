@@ -232,20 +232,20 @@
                                         <div class="x_content">
                                             <div class="row">
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control bolded" name="falsa" id="falsa" value="Falsa">
-                                                    <input type="text" class="form-control margin-top" name="falsa" id="falsa">
+                                                    <input type="text" class="form-control bolded" name="falsa[]" value="Falsa">
+                                                    <input type="text" class="form-control margin-top" name="falsa[]">
                                                 </div>
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control bolded" name="falsa" id="falsa" value="Contrafuerte">
-                                                    <input type="text" class="form-control margin-top" name="contrafuerte" id="contrafuerte">
+                                                    <input type="text" class="form-control bolded" name="contrafuerte[]" value="Contrafuerte">
+                                                    <input type="text" class="form-control margin-top" name="contrafuerte[]" >
                                                 </div>
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control bolded" name="falsa" id="falsa" value="Puntera">
-                                                    <input type="text" class="form-control margin-top" name="puntera" id="puntera">
+                                                    <input type="text" class="form-control bolded" name="puntera[]" value="Puntera">
+                                                    <input type="text" class="form-control margin-top" name="puntera[]">
                                                 </div>
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control bolded" name="talon" id="talon" value="Talón">
-                                                    <input type="text" class="form-control margin-top" name="talon" id="talon">
+                                                    <input type="text" class="form-control bolded" name="talon[]" value="Talón">
+                                                    <input type="text" class="form-control margin-top" name="talon[]">
                                                 </div>
                                             </div>
                                         </div>
@@ -265,20 +265,20 @@
                                         <div class="x_content">
                                             <div class="row">
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control bolded" name="talon" id="talon" value="Caja">
-                                                    <input type="text" class="form-control margin-top" name="caja" id="caja">
+                                                    <input type="text" class="form-control bolded" name="caja[]" value="Caja" id="caja">
+                                                    <input type="text" class="form-control margin-top" name="caja[]">
                                                 </div>
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control bolded" name="talon" id="talon" value="Papel">
-                                                    <input type="text" class="form-control margin-top" name="papel" id="papel">
+                                                    <input type="text" class="form-control bolded" name="papel[]" value="Papel" id="papel">
+                                                    <input type="text" class="form-control margin-top" name="papel[]">
                                                 </div>
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control bolded" name="talon" id="talon" value="Hantan">
-                                                    <input type="text" class="form-control margin-top" name="hantan" id="hantan">
+                                                    <input type="text" class="form-control bolded" name="hantan[]" value="Hantan" id="talon">
+                                                    <input type="text" class="form-control margin-top" name="hantan[]">
                                                 </div>
                                                 <div class="form-group">
-                                                    <input type="text" class="form-control bolded" name="talon" id="talon" value="Bolsa">
-                                                    <input type="text" class="form-control margin-top" name="bolsa" id="bolsa">
+                                                    <input type="text" class="form-control bolded" name="bolsa[]" value="Bolsa" id="bolsa">
+                                                    <input type="text" class="form-control margin-top" name="bolsa[]">
                                                 </div>
                                             </div>
                                         </div>
@@ -298,29 +298,29 @@
                                         <div class="x_content">
                                             <div class="row">
                                                 <div class="form-group">
-                                                    <label for="sello_pan_oro">Sello pan de oro</label>
-                                                    <input type="text" class="form-control" name="sello_pan_oro" id="sello_pan_oro">
+                                                    <input type="text" class="form-control bolded" name="sello_pan_oro[]" value="Sello pan de oro">
+                                                    <input type="text" class="form-control margin-top" name="sello_pan_oro[]">
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="sello_especificaion">Sello de esp.</label>
-                                                    <input type="text" class="form-control" name="sello_especificaion" id="sello_especificaion">
+                                                    <input type="text" class="form-control bolded" name="sello_especificaion[]" value="Sello de esp.">
+                                                    <input type="text" class="form-control margin-top" name="sello_especificaion[]">
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="troquel">N° Troquel</label>
-                                                    <input type="text" class="form-control" name="troquel" id="troquel">
+                                                    <input type="text" class="form-control bolded" name="troquel[]" value="N° Troquel">
+                                                    <input type="text" class="form-control margin-top" name="troquel[]">
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <label for="latex">
                                                             <span>LATEX</span>
-                                                            <input type="checkbox" class="checkboxes" value="latex" id="latex" checked>
+                                                            <input type="checkbox" class="checkboxes" name="latex" id="latex" checked>
                                                         </label>
                                                     </div>
 
                                                     <div class="col-md-6">
                                                         <label for="retacon">
                                                             <span>RETACON</span>
-                                                            <input type="checkbox" class="checkboxes" value="retacon" id="retacon">
+                                                            <input type="checkbox" class="checkboxes" name="retacon" id="retacon">
                                                         </label>
                                                     </div>
                                                 </div>
@@ -378,11 +378,11 @@
                                             <div class="row margin-top">
                                                 <div class="col-md-5 form-group">
                                                     <label for="aguja">Aguja</label>
-                                                    <input type="text" name="aguja" id="aguja" class="form-control">
+                                                    <input type="text" id="aguja" class="form-control">
                                                 </div>
                                                 <div class="col-md-5 form-group">
                                                     <label for="hilo_forro">Hilo Forro</label>
-                                                    <input type="text" name="hilo_forro" id="hilo_forro" class="form-control">
+                                                    <input type="text" id="hilo_forro" class="form-control">
                                                 </div>
                                             </div>
                                             <div class="row">

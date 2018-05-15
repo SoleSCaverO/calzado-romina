@@ -40,7 +40,6 @@ class RecordController extends Controller
     public function store(Request $request)
     {
         $data = $request->all();
-        dd($data);
         DB::beginTransaction();
         try{
             $ficha = new Ficha();
@@ -90,7 +89,8 @@ class RecordController extends Controller
                 FichaMateriales::create([
                     'ficha_id' => $ficha->id,
                     'area_id' => 7,
-                    'nombre' => $material
+                    'columna' => $material[0],
+                    'nombre' => $material[1]
                 ]);
             }
             /*MATERIALES ARMADO*/
@@ -101,28 +101,31 @@ class RecordController extends Controller
                 FichaMateriales::create([
                     'ficha_id' => $ficha->id,
                     'area_id' => 8,
-                    'nombre' => $material
+                    'columna' => $material[0],
+                    'nombre' => $material[1]
                 ]);
             }
             /*MATERIALES ENCAJADO*/
 
             /*MATERIALES HAB. PLANTILLA*/
-            if(@$data['latex'] && @$data['retacon']){
-                $lastMaterial = 'AMBOS';
-            }else if(@$data['latex']){
-                $lastMaterial = 'LATEX';
-            }else if(@$data['retacon']){
-                $lastMaterial = 'RETACON';
-            }else{
-                $lastMaterial = 'NINGUNO';
+            $checkboxes = [];
+            array_push($checkboxes,['nombre'=>'LATEX','checked'=>@$data['latex']?1:0]);
+            array_push($checkboxes,['nombre'=>'RETACON','checked'=>@$data['retacon']?1:0]);
+
+            $data['checkboxes'] = json_decode($data['checkboxes'] );
+
+            foreach($data['checkboxes'] as $checkbox ){
+                array_push($checkboxes,['nombre'=>$checkbox->nombre,'checked'=>$checkbox->checked]);
             }
 
-            $materiales = [$data['sello_pan_oro'],$data['sello_especificaion'],$data['troquel'],$lastMaterial];
-            foreach ( $materiales as $material) {
+            $checkboxes = json_encode($checkboxes);
+            $materiales = [$data['sello_pan_oro'],$data['sello_especificaion'],$data['troquel'],$checkboxes];
+            foreach ( $materiales as $key => $material) {
                 FichaMateriales::create([
                     'ficha_id' => $ficha->id,
                     'area_id' => 9,
-                    'nombre' => $material
+                    'columna' => ($key == 3)? null : $material[0],
+                    'nombre' =>  ($key == 3)? $material : $material[1]
                 ]);
             }
             /*MATERIALES HAB. PLANTILLA*/
@@ -135,7 +138,10 @@ class RecordController extends Controller
                         'ficha_id' => $ficha->id,
                         'area_id' => $area->id,
                         'nombre' => $material->material,
-                        'piezas' => @$material->pieza
+                        'color' => @$material->color,
+                        'cantidad' => @$material->cantidad,
+                        'piezas' => @$material->pieza,
+                        'extra_perfilado' => @$material->cantidad
                     ]);
                 }
             }
